@@ -1,5 +1,8 @@
 package com.maxim.wheeloffortune.edit
 
+import com.maxim.wheeloffortune.domain.edit.EditInteractor
+import com.maxim.wheeloffortune.presentation.edit.EditViewModel
+import kotlinx.coroutines.Dispatchers
 import org.junit.*
 import org.junit.Assert.assertEquals
 
@@ -10,7 +13,7 @@ class EditViewModelTest {
     @Before
     fun before() {
         interactor = FakeInteractor()
-        viewModel = EditViewModel(interactor = interactor)
+        viewModel = EditViewModel(interactor = interactor, Dispatchers.Unconfined)
     }
 
     @Test
@@ -45,7 +48,7 @@ class EditViewModelTest {
 
     @Test
     fun test_end_editing() {
-        viewModel.endEditing("title")
+        viewModel.endEditing(title = "title")
         interactor.checkEndEditing(1, "title")
     }
 
