@@ -1,4 +1,4 @@
-package com.maxim.wheeloffortune.domain
+package com.maxim.wheeloffortune.domain.main
 
 import com.maxim.wheeloffortune.data.WheelDataSource
 import kotlinx.coroutines.delay

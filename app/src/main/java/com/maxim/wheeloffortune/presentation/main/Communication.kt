@@ -1,4 +1,4 @@
-package com.maxim.wheeloffortune.presentation
+package com.maxim.wheeloffortune.presentation.main
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer

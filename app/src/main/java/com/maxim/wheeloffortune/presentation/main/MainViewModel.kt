@@ -1,8 +1,8 @@
-package com.maxim.wheeloffortune.presentation
+package com.maxim.wheeloffortune.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maxim.wheeloffortune.domain.Interactor
+import com.maxim.wheeloffortune.domain.main.Interactor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

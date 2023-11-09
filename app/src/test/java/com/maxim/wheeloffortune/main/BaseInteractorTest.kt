@@ -1,9 +1,9 @@
-package com.maxim.wheeloffortune
+package com.maxim.wheeloffortune.main
 
 import com.maxim.wheeloffortune.data.WheelDataSource
-import com.maxim.wheeloffortune.domain.BaseInteractor
-import com.maxim.wheeloffortune.domain.DomainItem
-import com.maxim.wheeloffortune.domain.Interactor
+import com.maxim.wheeloffortune.domain.main.BaseInteractor
+import com.maxim.wheeloffortune.domain.main.DomainItem
+import com.maxim.wheeloffortune.domain.main.Interactor
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.assertEquals

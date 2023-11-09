@@ -1,14 +1,14 @@
-package com.maxim.wheeloffortune
+package com.maxim.wheeloffortune.main
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
-import com.maxim.wheeloffortune.domain.DomainItem
-import com.maxim.wheeloffortune.domain.Interactor
-import com.maxim.wheeloffortune.presentation.Communication
-import com.maxim.wheeloffortune.presentation.MainViewModel
-import com.maxim.wheeloffortune.presentation.State
-import com.maxim.wheeloffortune.presentation.UiItem
+import com.maxim.wheeloffortune.domain.main.DomainItem
+import com.maxim.wheeloffortune.domain.main.Interactor
+import com.maxim.wheeloffortune.presentation.main.Communication
+import com.maxim.wheeloffortune.presentation.main.MainViewModel
+import com.maxim.wheeloffortune.presentation.main.State
+import com.maxim.wheeloffortune.presentation.main.UiItem
 import kotlinx.coroutines.Dispatchers
 import org.junit.*
 import org.junit.Assert.assertEquals

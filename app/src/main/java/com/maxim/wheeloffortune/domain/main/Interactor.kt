@@ -1,4 +1,4 @@
-package com.maxim.wheeloffortune.domain
+package com.maxim.wheeloffortune.domain.main
 
 interface Interactor {
     suspend fun getItemList(): List<DomainItem>
