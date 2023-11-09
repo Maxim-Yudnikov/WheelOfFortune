@@ -1,7 +1,8 @@
-package com.maxim.wheeloffortune
+package com.maxim.wheeloffortune.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.maxim.wheeloffortune.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
