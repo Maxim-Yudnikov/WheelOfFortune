@@ -1,12 +1,13 @@
 package com.maxim.wheeloffortune.main
 
-import com.maxim.wheeloffortune.data.WheelDataSource
+import com.maxim.wheeloffortune.data.WheelMainDataSource
 import com.maxim.wheeloffortune.domain.main.BaseInteractor
 import com.maxim.wheeloffortune.domain.main.DomainItem
 import com.maxim.wheeloffortune.domain.main.Interactor
 import kotlinx.coroutines.runBlocking
-import org.junit.*
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
 
 class BaseInteractorTest {
     private lateinit var interactor: Interactor
@@ -39,7 +40,7 @@ class BaseInteractorTest {
     }
 
 
-    private class FakeDataSource : WheelDataSource {
+    private class FakeDataSource : WheelMainDataSource {
         private var cacheCounter = 0
         private var cacheValue = -1
         override suspend fun getItemList(): List<DomainItem.BaseDomainItem> {
