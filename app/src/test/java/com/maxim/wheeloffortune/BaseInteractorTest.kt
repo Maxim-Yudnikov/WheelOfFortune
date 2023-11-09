@@ -1,5 +1,7 @@
 package com.maxim.wheeloffortune
 
+import com.maxim.wheeloffortune.data.WheelDataSource
+import com.maxim.wheeloffortune.domain.BaseInteractor
 import com.maxim.wheeloffortune.domain.DomainItem
 import com.maxim.wheeloffortune.domain.Interactor
 import kotlinx.coroutines.runBlocking
@@ -30,6 +32,12 @@ class BaseInteractorTest {
         dataSource.checkCache(1, 123)
     }
 
+    @Test
+    fun test_rotate() = runBlocking {
+        val actual = interactor.rotate()
+        assertEquals("Random Name", actual)
+    }
+
 
     private class FakeDataSource : WheelDataSource {
         private var cacheCounter = 0
@@ -41,6 +49,10 @@ class BaseInteractorTest {
         override fun cache(id: Int) {
             cacheCounter++
             cacheValue = id
+        }
+
+        override fun getRandomItemName(): String {
+            return "Random Name"
         }
 
         fun checkCache(count: Int, value: Int) {
