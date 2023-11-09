@@ -1,6 +1,7 @@
 package com.maxim.wheeloffortune.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
+import com.maxim.wheeloffortune.domain.edit.BaseEditInteractor
 import com.maxim.wheeloffortune.domain.edit.EditInteractor
 import kotlinx.coroutines.runBlocking
 import org.junit.*
