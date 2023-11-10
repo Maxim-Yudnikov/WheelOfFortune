@@ -19,7 +19,9 @@ class MainViewModel(
     }
 
     fun openItem(id: Int) {
-        interactor.openItem(id)
+        viewModelScope.launch(dispatcher) {
+            interactor.openItem(id)
+        }
     }
 
     fun rotate() {

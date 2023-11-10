@@ -121,6 +121,10 @@ class EditViewModelTest {
             endEditingValue = title
         }
 
+        override fun cancelEditing() {
+            TODO("Not yet implemented")
+        }
+
         fun checkEndEditing(count: Int, value: String) {
             assertEquals(count, endEditingCounter)
             assertEquals(value, endEditingValue)

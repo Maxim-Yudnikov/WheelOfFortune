@@ -40,4 +40,8 @@ class EditViewModel(
             interactor.endEditing(title)
         }
     }
+
+    fun cancelEditing() {
+        interactor.cancelEditing()
+    }
 }

@@ -7,12 +7,12 @@ class BaseInteractor(
     private val dataSource: WheelMainDataSource
 ): Interactor {
     override suspend fun getItemList(): List<DomainItem> {
-        val list = dataSource.getItemList().toMutableList()
+        val list = dataSource.getWheelList().toMutableList()
         list.add(DomainItem.Empty)
         return list
     }
 
-    override fun openItem(id: Int) {
+    override suspend fun openItem(id: Int) {
         dataSource.cache(id)
     }
 

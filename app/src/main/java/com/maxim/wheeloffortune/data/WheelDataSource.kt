@@ -5,9 +5,9 @@ import com.maxim.wheeloffortune.domain.main.DomainItem
 interface WheelDataSource : WheelEditDataSource, WheelMainDataSource
 
 interface WheelMainDataSource {
-    suspend fun getItemList(): List<DomainItem>
-    fun cache(id: Int)
-    fun getRandomItemName(): String
+    suspend fun getWheelList(): List<DomainItem>
+    suspend fun cache(id: Int)
+    suspend fun getRandomItemName(): String
 }
 
 interface WheelEditDataSource {
@@ -16,5 +16,6 @@ interface WheelEditDataSource {
     fun deleteItem(id: Int)
     fun changeItemName(id:Int, name: String)
     fun changeItemColor(id: Int, color: Int)
-    fun endEditing(title: String)
+    suspend fun endEditing(title: String)
+    fun cancelEditing()
 }

@@ -4,10 +4,16 @@ import com.maxim.wheeloffortune.presentation.main.UiItem
 
 interface DomainItem {
     fun mapToUi(): UiItem
-    data class BaseDomainItem(private val title: String, private val list: List<WheelItem>):
+    data class BaseDomainWheel(private val id: Int, private val title: String, private val list: List<BaseDomainItem>):
         DomainItem {
         override fun mapToUi(): UiItem {
-            return UiItem.BaseUiItem(title, list)
+            return UiItem.BaseUiWheel(id, title, list.map { it.mapToUi() as UiItem.BaseUiItem })
+        }
+    }
+
+    data class BaseDomainItem(private val name: String, private val color: Int) : DomainItem {
+        override fun mapToUi(): UiItem {
+            return UiItem.BaseUiItem(name, color)
         }
     }
 

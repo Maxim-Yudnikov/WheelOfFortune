@@ -23,12 +23,12 @@ class BaseInteractorTest {
     fun test_get_item_list() = runBlocking {
         val actual = interactor.getItemList()
         val expected =
-            listOf(DomainItem.BaseDomainItem("Title", emptyList()), DomainItem.Empty)
+            listOf(DomainItem.BaseDomainWheel(44, "Title", emptyList()), DomainItem.Empty)
         assertEquals(expected, actual)
     }
 
     @Test
-    fun test_open_item() {
+    fun test_open_item() = runBlocking {
         interactor.openItem(123)
         dataSource.checkCache(1, 123)
     }
@@ -43,16 +43,16 @@ class BaseInteractorTest {
     private class FakeDataSource : WheelMainDataSource {
         private var cacheCounter = 0
         private var cacheValue = -1
-        override suspend fun getItemList(): List<DomainItem.BaseDomainItem> {
-            return listOf(DomainItem.BaseDomainItem("Title", emptyList()))
+        override suspend fun getWheelList(): List<DomainItem.BaseDomainWheel> {
+            return listOf(DomainItem.BaseDomainWheel(44, "Title", emptyList()))
         }
 
-        override fun cache(id: Int) {
+        override suspend fun cache(id: Int) {
             cacheCounter++
             cacheValue = id
         }
 
-        override fun getRandomItemName(): String {
+        override suspend fun getRandomItemName(): String {
             return "Random Name"
         }
 

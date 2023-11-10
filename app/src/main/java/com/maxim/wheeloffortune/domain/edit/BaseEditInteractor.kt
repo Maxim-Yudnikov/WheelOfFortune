@@ -28,4 +28,8 @@ class BaseEditInteractor(
     override suspend fun endEditing(title: String) {
         dataSource.endEditing(title)
     }
+
+    override fun cancelEditing() {
+        dataSource.cancelEditing()
+    }
 }

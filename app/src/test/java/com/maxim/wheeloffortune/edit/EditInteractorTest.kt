@@ -115,9 +115,13 @@ class EditInteractorTest {
             assertEquals(second, changeItemColorSecondValue)
         }
 
-        override fun endEditing(title: String) {
+        override suspend fun endEditing(title: String) {
             endEditingCounter++
             endEditingValue = title
+        }
+
+        override fun cancelEditing() {
+            TODO("Not yet implemented")
         }
 
         fun checkEndEditing(count: Int, value: String) {

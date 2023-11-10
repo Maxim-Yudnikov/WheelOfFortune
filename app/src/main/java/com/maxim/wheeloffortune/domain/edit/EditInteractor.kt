@@ -7,4 +7,5 @@ interface EditInteractor {
     fun changeItemName(id: Int, name: String)
     fun changeItemColor(id: Int, colorId: Int)
     suspend fun endEditing(title: String)
+    fun cancelEditing()
 }

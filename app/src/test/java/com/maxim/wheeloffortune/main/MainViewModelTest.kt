@@ -34,7 +34,7 @@ class MainViewModelTest {
     fun test_get_item_list() {
         viewModel.getItemList()
         val actual = communication.itemList
-        val expected = listOf<UiItem>(UiItem.BaseUiItem("title", emptyList()), UiItem.Empty)
+        val expected = listOf<UiItem>(UiItem.BaseUiWheel(24, "title", emptyList()), UiItem.Empty)
         assertEquals(expected, actual)
     }
 
@@ -85,9 +85,9 @@ class MainViewModelTest {
         private var openItemCounter = 0
         private var openItemValue = -1
         override suspend fun getItemList(): List<DomainItem> {
-            return listOf(DomainItem.BaseDomainItem("title", emptyList()), DomainItem.Empty)
+            return listOf(DomainItem.BaseDomainWheel(24,"title", emptyList()), DomainItem.Empty)
         }
-        override fun openItem(id: Int) {
+        override suspend fun openItem(id: Int) {
             openItemCounter++
             openItemValue = id
         }
