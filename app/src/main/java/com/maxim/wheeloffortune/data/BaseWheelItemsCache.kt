@@ -3,7 +3,7 @@ package com.maxim.wheeloffortune.data
 class BaseWheelItemsCache: WheelItemsCache {
     private var cache = mutableListOf<DataItem.BaseDataItem>()
     override fun cache(list: List<DataItem.BaseDataItem>) {
-        cache.addAll(list.reversed())
+        cache.addAll(list)
     }
 
     override fun createItem(item: DataItem.BaseDataItem) {

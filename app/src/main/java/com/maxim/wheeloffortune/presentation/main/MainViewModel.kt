@@ -1,5 +1,7 @@
 package com.maxim.wheeloffortune.presentation.main
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maxim.wheeloffortune.domain.main.Interactor
@@ -24,10 +26,22 @@ class MainViewModel(
         }
     }
 
+    fun closeItem() {
+        interactor.closeItem()
+    }
+
     fun rotate() {
         communication.showState(State.Rotating)
         viewModelScope.launch(dispatcher) {
             communication.showState(State.Done(interactor.rotate()))
         }
+    }
+
+    fun observe(owner: LifecycleOwner, observer: Observer<State>) {
+        communication.observeState(owner, observer)
+    }
+
+    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
+        communication.observeList(owner, observer)
     }
 }

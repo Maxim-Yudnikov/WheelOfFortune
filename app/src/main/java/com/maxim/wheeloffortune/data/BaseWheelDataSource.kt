@@ -16,12 +16,16 @@ class BaseWheelDataSource(
     }
 
     override fun createNewItem() {
-        val item = DataItem.BaseDataItem("Title", 0)
+        val item = DataItem.BaseDataItem("", 0)
         wheelItemsCache.createItem(item)
     }
 
     override fun deleteItem(id: Int) {
         wheelItemsCache.deleteItem(id)
+    }
+
+    override fun getList(): List<DomainItem.BaseDomainItem> {
+        return wheelItemsCache.getItemList().map { it.mapToDomain() as DomainItem.BaseDomainItem }
     }
 
     override fun changeItemName(id: Int, name: String) {
@@ -67,11 +71,17 @@ class BaseWheelDataSource(
     }
 
     override suspend fun cache(id: Int) {
-        wheelCache.cacheId(id)
-        wheelItemsCache.cache(dao.getAllItemsWithId(id).map { it.mapToData() }.reversed())
+        if (id != -1) {
+            wheelCache.cacheId(id)
+            wheelItemsCache.cache(dao.getAllItemsWithId(id).map { it.mapToData() }.reversed())
+        }
     }
 
     override suspend fun getRandomItemName(): String {
         return dao.getAllItemsWithId(wheelCache.getCachedId()).random().name
+    }
+
+    override fun closeWheel() {
+        wheelCache.clear()
     }
 }

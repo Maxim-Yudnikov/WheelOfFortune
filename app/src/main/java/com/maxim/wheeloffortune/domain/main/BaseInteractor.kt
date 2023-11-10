@@ -17,7 +17,11 @@ class BaseInteractor(
     }
 
     override suspend fun rotate(): String {
-        delay(2000)
+        delay(200)
         return dataSource.getRandomItemName()
+    }
+
+    override fun closeItem() {
+        dataSource.closeWheel()
     }
 }

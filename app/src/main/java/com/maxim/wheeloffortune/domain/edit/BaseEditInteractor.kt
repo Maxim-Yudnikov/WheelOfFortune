@@ -1,6 +1,7 @@
 package com.maxim.wheeloffortune.domain.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
+import com.maxim.wheeloffortune.domain.main.DomainItem
 
 class BaseEditInteractor(
     private val dataSource: WheelEditDataSource
@@ -15,6 +16,10 @@ class BaseEditInteractor(
 
     override suspend fun deleteItem(id: Int) {
         dataSource.deleteItem(id)
+    }
+
+    override fun getList(): List<DomainItem.BaseDomainItem> {
+        return dataSource.getList()
     }
 
     override fun changeItemName(id: Int, name: String) {
