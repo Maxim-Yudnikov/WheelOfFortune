@@ -1,7 +1,11 @@
 package com.maxim.wheeloffortune.presentation.main
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -68,15 +72,25 @@ class WheelFragment : BaseFragment() {
         val actionButton = view.findViewById<Button>(R.id.actionButton)
 
         val nameList = mutableListOf<String>()
+        val colorList = mutableListOf<Int>()
         list.forEach {
             it.showText(itemsTextView)
             nameList.add(itemsTextView.text.toString())
+            colorList.add(it.getColor())
         }
         val sb = StringBuilder()
+        val indexes = mutableListOf<Pair<Int, Int>>()
         nameList.forEach {
+            val index = sb.length
             sb.append("$it\n")
+            indexes.add(Pair(index, sb.length))
         }
-        itemsTextView.text = sb
+        val spannable = SpannableString(sb)
+        indexes.forEachIndexed{ index, item ->
+            val color = requireActivity().getColor(colorList[index])
+            spannable.setSpan(ForegroundColorSpan(color), item.first, item.second, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        itemsTextView.setText(spannable, TextView.BufferType.SPANNABLE)
         actionButton.setOnClickListener {
             viewModel.rotate()
         }

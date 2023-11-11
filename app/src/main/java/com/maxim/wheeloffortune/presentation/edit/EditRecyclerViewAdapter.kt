@@ -51,6 +51,24 @@ class EditRecyclerViewAdapter(
             deleteImageButton.setOnClickListener {
                 listener.delete(position)
             }
+
+            val changeColorButton = itemView.findViewById<ImageButton>(R.id.changeColorButton)
+            changeColorButton.setBackgroundResource(item.getColor())
+            changeColorButton.setOnClickListener {
+                val color = item.changeColor(position, listener)
+                changeColorButton.setBackgroundResource(getColorResourceId(color))
+            }
+        }
+
+        //todo fix below
+        private fun getColorResourceId(id: Int): Int {
+            return when (id) {
+                0 -> {R.color.first}
+                1 -> {R.color.second}
+                2 -> {R.color.third}
+                3 -> {R.color.fourth}
+                else -> {R.color.fifth}
+            }
         }
     }
 
@@ -67,6 +85,7 @@ class EditRecyclerViewAdapter(
 
     interface Listener {
         fun onTextChanged(id: Int, text: String)
+        fun changeColor(id: Int, color: Int)
         fun delete(id: Int)
     }
 }

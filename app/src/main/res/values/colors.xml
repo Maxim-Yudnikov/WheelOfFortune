@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- item colors -->
+    <color name="first">#FF0000</color>
+    <color name="second">#2FFF00</color>
+    <color name="third">#0099FF</color>
+    <color name="fourth">#FFC400</color>
+    <color name="fifth">#C300FF</color>
 </resources>

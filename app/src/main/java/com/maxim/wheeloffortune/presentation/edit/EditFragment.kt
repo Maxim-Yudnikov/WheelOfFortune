@@ -43,6 +43,10 @@ class EditFragment() : BaseFragment() {
                     editViewModel.changeItemName(id, text)
                 }
 
+                override fun changeColor(id: Int, color: Int) {
+                    editViewModel.changeItemColor(id, color)
+                }
+
                 override fun delete(id: Int) {
                     editViewModel.deleteItem(id)
                 }
