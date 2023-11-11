@@ -3,15 +3,19 @@ package com.maxim.wheeloffortune.presentation.main
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.presentation.BaseFragment
+import com.maxim.wheeloffortune.presentation.edit.EditFragment
 
 class WheelFragment : BaseFragment() {
-
+    private lateinit var title: String
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -20,8 +24,27 @@ class WheelFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_wheel, container, false)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.wheel_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.editWheel -> {
+                replaceFragment(EditFragment.newInstance(title), true)
+            }
+        }
+        return true
+    }
+
+    override var actionBarTitle = ""
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        title = arguments?.getString(TITLE)!!
+        actionBarTitle = title
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         val list = mutableListOf<UiItem.BaseUiItem>()
         for (i in 0..Int.MAX_VALUE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -36,6 +59,8 @@ class WheelFragment : BaseFragment() {
                     break
             }
         }
+
+
 
         val itemsTextView = view.findViewById<TextView>(R.id.itemsTextView)
         val resultTextView = view.findViewById<TextView>(R.id.resultTextView)

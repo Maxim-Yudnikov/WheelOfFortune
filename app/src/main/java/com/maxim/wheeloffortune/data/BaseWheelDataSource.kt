@@ -83,5 +83,6 @@ class BaseWheelDataSource(
 
     override fun closeWheel() {
         wheelCache.clear()
+        wheelItemsCache.clear()
     }
 }

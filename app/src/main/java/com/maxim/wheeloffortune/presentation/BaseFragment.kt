@@ -8,7 +8,6 @@ import com.maxim.wheeloffortune.App
 import com.maxim.wheeloffortune.presentation.edit.EditCommunication
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
 import com.maxim.wheeloffortune.presentation.main.Communication
-import com.maxim.wheeloffortune.presentation.main.MainActivity
 import com.maxim.wheeloffortune.presentation.main.MainViewModel
 
 abstract class BaseFragment: Fragment() {
@@ -22,6 +21,7 @@ abstract class BaseFragment: Fragment() {
     }
 
     protected abstract val onBackPressed: () -> Unit
+    protected abstract var actionBarTitle: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,5 +36,7 @@ abstract class BaseFragment: Fragment() {
                 onBackPressed.invoke()
             }
         })
+
+        (requireActivity() as MainActivity).setActionBarTitle(actionBarTitle)
     }
 }

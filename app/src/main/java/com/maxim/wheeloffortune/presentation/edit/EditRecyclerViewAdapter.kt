@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.SimpleTextWatcher
@@ -17,12 +18,16 @@ class EditRecyclerViewAdapter(
 ) : RecyclerView.Adapter<EditRecyclerViewAdapter.ViewHolder>() {
     private val textWatchers = mutableListOf<Pair<EditText, SimpleTextWatcher>>()
     fun update() {
-        //communication.getDiffResult().dispatchUpdatesTo(this)
         textWatchers.forEach {
             it.first.removeTextChangedListener(it.second)
         }
         textWatchers.clear()
+        //communication.getDiffResult().dispatchUpdatesTo(this)
         notifyDataSetChanged()
+    }
+
+    fun clear() {
+        communication.clear()
     }
 
     class ViewHolder(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
@@ -41,6 +46,11 @@ class EditRecyclerViewAdapter(
             }
             textWatchers.add(Pair(nameTextView, textWatcher))
             nameTextView.addTextChangedListener(textWatcher)
+
+            val deleteImageButton = itemView.findViewById<ImageButton>(R.id.deleteItem)
+            deleteImageButton.setOnClickListener {
+                listener.delete(position)
+            }
         }
     }
 
@@ -57,5 +67,6 @@ class EditRecyclerViewAdapter(
 
     interface Listener {
         fun onTextChanged(id: Int, text: String)
+        fun delete(id: Int)
     }
 }

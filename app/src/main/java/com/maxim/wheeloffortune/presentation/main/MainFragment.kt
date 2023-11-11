@@ -19,6 +19,8 @@ class MainFragment() : BaseFragment() {
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
+    override var actionBarTitle = "Wheel of fortune"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
