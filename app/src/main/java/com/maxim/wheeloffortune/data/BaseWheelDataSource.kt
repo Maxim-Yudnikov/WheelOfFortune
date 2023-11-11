@@ -3,6 +3,7 @@ package com.maxim.wheeloffortune.data
 import com.maxim.wheeloffortune.data.room.ItemRoomModel
 import com.maxim.wheeloffortune.data.room.RoomDao
 import com.maxim.wheeloffortune.data.room.WheelRoomModel
+import com.maxim.wheeloffortune.domain.EmptyItemListException
 import com.maxim.wheeloffortune.domain.main.DomainItem
 
 class BaseWheelDataSource(
@@ -26,7 +27,11 @@ class BaseWheelDataSource(
     }
 
     override fun getList(): List<DomainItem.BaseDomainItem> {
-        return wheelItemsCache.getItemList().map { it.mapToDomain() as DomainItem.BaseDomainItem }
+        val list = wheelItemsCache.getItemList()
+        if (list.isEmpty())
+            throw EmptyItemListException()
+        else
+            return list.map { it.mapToDomain() as DomainItem.BaseDomainItem }
     }
 
     override fun changeItemName(id: Int, name: String) {

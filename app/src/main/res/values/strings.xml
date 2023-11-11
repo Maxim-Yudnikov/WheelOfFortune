@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WheelOfFortune</string>
+    <string name="empty_list">Create an item using the button \"New item\"</string>
 </resources>

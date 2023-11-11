@@ -1,10 +1,12 @@
 package com.maxim.wheeloffortune.domain.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
+import com.maxim.wheeloffortune.domain.FailureHandler
 import com.maxim.wheeloffortune.domain.main.DomainItem
 
 class BaseEditInteractor(
-    private val dataSource: WheelEditDataSource
+    private val dataSource: WheelEditDataSource,
+    private val failureHandler: FailureHandler
 ): EditInteractor {
     override suspend fun deleteWheel() {
         dataSource.deleteWheel()
@@ -18,8 +20,12 @@ class BaseEditInteractor(
         dataSource.deleteItem(id)
     }
 
-    override fun getList(): List<DomainItem.BaseDomainItem> {
-        return dataSource.getList()
+    override fun getList(): List<DomainItem> {
+        return try {
+            dataSource.getList()
+        } catch (e: Exception) {
+            return listOf(DomainItem.FailedDomainItem(failureHandler.handle(e).getMessage()))
+        }
     }
 
     override fun changeItemName(id: Int, name: String) {

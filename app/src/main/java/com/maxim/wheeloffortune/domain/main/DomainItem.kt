@@ -11,6 +11,12 @@ interface DomainItem {
         }
     }
 
+    data class FailedDomainItem(private val message: String): DomainItem {
+        override fun mapToUi(): UiItem {
+            return UiItem.FailedUiItem(message)
+        }
+    }
+
     data class BaseDomainItem(private val name: String, private val color: Int) : DomainItem {
         override fun mapToUi(): UiItem {
             return UiItem.BaseUiItem(name, color)

@@ -6,9 +6,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.maxim.wheeloffortune.presentation.main.UiItem
 
 interface EditCommunication {
-    fun showList(list: List<UiItem.BaseUiItem>)
-    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem.BaseUiItem>>)
-    fun getList(): List<UiItem.BaseUiItem>
-    fun getDiffResult(): DiffUtil.DiffResult
+    fun showList(list: List<UiItem>)
+    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>)
+    fun getList(): List<UiItem>
     fun clear()
 }

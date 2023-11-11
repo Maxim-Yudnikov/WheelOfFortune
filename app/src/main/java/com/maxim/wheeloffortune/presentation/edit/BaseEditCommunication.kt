@@ -9,23 +9,18 @@ import com.maxim.wheeloffortune.presentation.main.RecyclerViewAdapter
 import com.maxim.wheeloffortune.presentation.main.UiItem
 
 class BaseEditCommunication : EditCommunication {
-    private val liveData = MutableLiveData<List<UiItem.BaseUiItem>>()
-    private lateinit var diffResult: DiffUtil.DiffResult
-    override fun showList(list: List<UiItem.BaseUiItem>) {
-        val callback = DiffUtilCallback(liveData.value ?: emptyList(), list)
-        diffResult = DiffUtil.calculateDiff(callback)
+    private val liveData = MutableLiveData<List<UiItem>>()
+    override fun showList(list: List<UiItem>) {
         liveData.value = list
     }
 
-    override fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem.BaseUiItem>>) {
+    override fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
         liveData.observe(owner, observer)
     }
 
-    override fun getList(): List<UiItem.BaseUiItem> {
+    override fun getList(): List<UiItem> {
         return liveData.value ?: emptyList()
     }
-
-    override fun getDiffResult(): DiffUtil.DiffResult = diffResult
     override fun clear() {
         liveData.value = emptyList()
     }

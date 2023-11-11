@@ -22,7 +22,6 @@ class EditRecyclerViewAdapter(
             it.first.removeTextChangedListener(it.second)
         }
         textWatchers.clear()
-        //communication.getDiffResult().dispatchUpdatesTo(this)
         notifyDataSetChanged()
     }
 
@@ -30,51 +29,71 @@ class EditRecyclerViewAdapter(
         communication.clear()
     }
 
-    class ViewHolder(view: View, private val listener: Listener) : RecyclerView.ViewHolder(view) {
-        fun bind(
-            item: UiItem.BaseUiItem,
+    class EmptyViewHolder(view: View) : ViewHolder(view)
+
+    abstract class ViewHolder(view: View) :
+        RecyclerView.ViewHolder(view) {
+
+        open fun bind(
+            item: UiItem,
             position: Int,
             textWatchers: MutableList<Pair<EditText, SimpleTextWatcher>>
         ) {
-            val nameTextView = itemView.findViewById<EditText>(R.id.nameTextView)
-            item.showText(nameTextView)
-            val textWatcher = object : SimpleTextWatcher() {
-                override fun afterTextChanged(s: Editable?) {
-                    Log.d("MyLog", "Position: $position")
-                    listener.onTextChanged(position, s.toString())
-                }
-            }
-            textWatchers.add(Pair(nameTextView, textWatcher))
-            nameTextView.addTextChangedListener(textWatcher)
-
-            val deleteImageButton = itemView.findViewById<ImageButton>(R.id.deleteItem)
-            deleteImageButton.setOnClickListener {
-                listener.delete(position)
-            }
-
-            val changeColorButton = itemView.findViewById<ImageButton>(R.id.changeColorButton)
-            changeColorButton.setBackgroundResource(item.getColor())
-            changeColorButton.setOnClickListener {
-                val color = item.changeColor(position, listener)
-                changeColorButton.setBackgroundResource(getColorResourceId(color))
-            }
         }
 
-        //todo fix below
-        private fun getColorResourceId(id: Int): Int {
-            return when (id) {
-                0 -> {R.color.first}
-                1 -> {R.color.second}
-                2 -> {R.color.third}
-                3 -> {R.color.fourth}
-                else -> {R.color.fifth}
+        class Base(view: View, private val listener: Listener) : ViewHolder(view) {
+            override fun bind(
+                item: UiItem,
+                position: Int,
+                textWatchers: MutableList<Pair<EditText, SimpleTextWatcher>>
+            ) {
+                val nameTextView = itemView.findViewById<EditText>(R.id.nameTextView)
+                item.showText(nameTextView)
+                val textWatcher = object : SimpleTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        Log.d("MyLog", "Position: $position")
+                        listener.onTextChanged(position, s.toString())
+                    }
+                }
+                textWatchers.add(Pair(nameTextView, textWatcher))
+                nameTextView.addTextChangedListener(textWatcher)
+
+                val deleteImageButton = itemView.findViewById<ImageButton>(R.id.deleteItem)
+                deleteImageButton.setOnClickListener {
+                    listener.delete(position)
+                }
+
+                val changeColorButton = itemView.findViewById<ImageButton>(R.id.changeColorButton)
+                changeColorButton.setBackgroundResource(item.getColor())
+                changeColorButton.setOnClickListener {
+                    val color = item.changeColor(position, listener)
+                    changeColorButton.setBackgroundResource(getColorResourceId(color))
+                }
+            }
+
+            //todo fix below
+            private fun getColorResourceId(id: Int): Int {
+                return when (id) {
+                    0 -> R.color.first
+                    1 -> R.color.second
+                    2 -> R.color.third
+                    3 -> R.color.fourth
+                    else -> R.color.fifth
+                }
             }
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (communication.getList()[position] is UiItem.FailedUiItem) 1 else 0
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_item, parent, false)
-        return ViewHolder(view, listener)
+        val view = LayoutInflater.from(parent.context).inflate(
+            if (viewType == 0)
+                R.layout.item_item else R.layout.empty_item_list, parent, false
+        )
+        return if(viewType == 0) ViewHolder.Base(view, listener) else EmptyViewHolder(view)
     }
 
     override fun getItemCount(): Int = communication.getList().size

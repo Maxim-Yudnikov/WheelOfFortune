@@ -5,6 +5,7 @@ import com.maxim.wheeloffortune.data.BaseWheelCache
 import com.maxim.wheeloffortune.data.BaseWheelDataSource
 import com.maxim.wheeloffortune.data.BaseWheelItemsCache
 import com.maxim.wheeloffortune.data.room.DatabaseProvider
+import com.maxim.wheeloffortune.domain.BaseFailureHandler
 import com.maxim.wheeloffortune.domain.edit.BaseEditInteractor
 import com.maxim.wheeloffortune.domain.main.BaseInteractor
 import com.maxim.wheeloffortune.presentation.edit.BaseEditCommunication
@@ -31,6 +32,6 @@ class App : Application() {
         viewModel = MainViewModel(BaseInteractor(dataSource), communication)
 
         editCommunication = BaseEditCommunication()
-        editViewModel = EditViewModel(BaseEditInteractor(dataSource), editCommunication)
+        editViewModel = EditViewModel(BaseEditInteractor(dataSource, BaseFailureHandler()), editCommunication)
     }
 }

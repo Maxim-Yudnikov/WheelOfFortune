@@ -29,15 +29,15 @@ class EditViewModel(
     fun deleteItem(id: Int) {
         viewModelScope.launch(dispatcher) {
             interactor.deleteItem(id)
-            communication.showList(interactor.getList().map { it.mapToUi() as UiItem.BaseUiItem })
+            communication.showList(interactor.getList().map { it.mapToUi() })
         }
     }
 
     fun getItemList() {
-        communication.showList(interactor.getList().map { it.mapToUi() as UiItem.BaseUiItem })
+        communication.showList(interactor.getList().map { it.mapToUi() })
     }
 
-    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem.BaseUiItem>>) {
+    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
         communication.observeList(owner, observer)
     }
 
