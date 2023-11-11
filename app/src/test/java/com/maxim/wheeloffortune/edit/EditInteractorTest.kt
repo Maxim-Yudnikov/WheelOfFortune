@@ -3,6 +3,7 @@ package com.maxim.wheeloffortune.edit
 import com.maxim.wheeloffortune.data.WheelEditDataSource
 import com.maxim.wheeloffortune.domain.BaseFailureHandler
 import com.maxim.wheeloffortune.domain.EmptyItemListException
+import com.maxim.wheeloffortune.domain.EmptyItemNameException
 import com.maxim.wheeloffortune.domain.edit.BaseEditInteractor
 import com.maxim.wheeloffortune.domain.edit.EditInteractor
 import com.maxim.wheeloffortune.domain.main.DomainItem
@@ -65,10 +66,18 @@ class EditInteractorTest {
     }
 
     @Test
-    fun test_get_item_list_failed() = runBlocking {
-        dataSource.returnSuccess = false
+    fun test_get_item_list_empty_list() = runBlocking {
+        dataSource.returnType = 1
         val actual = interactor.getList()
-        val expected = listOf(DomainItem.FailedDomainItem("Empty item list"))
+        val expected = listOf(DomainItem.FailedDomainItem("Item list must not be empty"))
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun test_get_item_list_empty_item_name() = runBlocking {
+        dataSource.returnType = 2
+        val actual = interactor.getList()
+        val expected = listOf(DomainItem.FailedDomainItem("Item name must not be empty. Empty item name at position 3"))
         assertEquals(expected, actual)
     }
 
@@ -85,7 +94,7 @@ class EditInteractorTest {
         private var changeItemColorSecondValue = -1
         private var endEditingCounter = 0
         private var endEditingValue = ""
-        var returnSuccess = true
+        var returnType = 0
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -108,13 +117,14 @@ class EditInteractorTest {
         }
 
         override fun getList(): List<DomainItem.BaseDomainItem> {
-            if (returnSuccess)
-                return listOf(
+            return when(returnType) {
+                0 -> listOf(
                     DomainItem.BaseDomainItem("Name", 0),
                     DomainItem.BaseDomainItem("Name 2", 1)
                 )
-            else
-                throw EmptyItemListException()
+                1 -> throw EmptyItemListException()
+                else -> throw EmptyItemNameException("2")
+            }
         }
 
         fun checkDeleteItem(count: Int, value: Int) {

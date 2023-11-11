@@ -53,8 +53,13 @@ class EditViewModel(
     fun endEditing(title: String, onEnd: () -> Unit) {
         if (titleValidator.isValid(title))
         viewModelScope.launch(dispatcher) {
-            interactor.endEditing(title)
-            onEnd.invoke()
+            val result = interactor.endEditing(title)
+            if (result == "success") {
+                onEnd.invoke()
+                communication.showState(EditState.Success)
+            }
+            else
+                communication.showState(EditState.ItemListError(result))
         } else {
             communication.showState(EditState.TitleError(titleValidator.getMessage()))
         }

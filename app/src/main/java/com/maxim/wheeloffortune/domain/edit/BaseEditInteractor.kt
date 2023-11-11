@@ -36,8 +36,13 @@ class BaseEditInteractor(
         dataSource.changeItemColor(id, colorId)
     }
 
-    override suspend fun endEditing(title: String) {
-        dataSource.endEditing(title)
+    override suspend fun endEditing(title: String): String {
+        return try {
+            dataSource.endEditing(title)
+            "success"
+        } catch (e: Exception) {
+            failureHandler.handle(e).getMessage()
+        }
     }
 
     override fun cancelEditing() {

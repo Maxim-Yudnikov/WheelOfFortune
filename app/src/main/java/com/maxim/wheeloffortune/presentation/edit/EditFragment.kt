@@ -1,7 +1,6 @@
 package com.maxim.wheeloffortune.presentation.edit
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,11 +8,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
-import androidx.activity.OnBackPressedCallback
+import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.maxim.wheeloffortune.R
+import com.maxim.wheeloffortune.SimpleTextWatcher
 import com.maxim.wheeloffortune.presentation.BaseFragment
 import com.maxim.wheeloffortune.presentation.main.MainFragment
 
@@ -25,7 +25,7 @@ class EditFragment() : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.framgment_edit, container, false)
+        return inflater.inflate(R.layout.fragment_edit, container, false)
     }
 
     override var actionBarTitle = ""
@@ -36,11 +36,14 @@ class EditFragment() : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         val recyclerView = view.findViewById<RecyclerView>(R.id.itemsRecyclerView)
+        val listErrorTextView = view.findViewById<TextView>(R.id.listErrorTextView)
+        listErrorTextView.visibility = View.GONE
         editCommunication.clear()
         adapter =
             EditRecyclerViewAdapter(editCommunication, object : EditRecyclerViewAdapter.Listener {
                 override fun onTextChanged(id: Int, text: String) {
                     editViewModel.changeItemName(id, text)
+                    listErrorTextView.visibility = View.GONE
                 }
 
                 override fun changeColor(id: Int, color: Int) {
@@ -65,6 +68,7 @@ class EditFragment() : BaseFragment() {
         if (title != null) titleEditText.setText(title)
 
         newItemButton.setOnClickListener {
+            listErrorTextView.visibility = View.GONE
             editViewModel.createItem()
         }
         saveButton.setOnClickListener {
@@ -72,9 +76,15 @@ class EditFragment() : BaseFragment() {
                 replaceFragment(MainFragment())
             }
         }
+        titleEditText.addTextChangedListener (object : SimpleTextWatcher() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                textInputLayout.error = ""
+                textInputLayout.isErrorEnabled = false
+            }
+        })
 
         editViewModel.observeState(this) {
-            it.apply(textInputLayout)
+            it.apply(textInputLayout, listErrorTextView)
         }
     }
 

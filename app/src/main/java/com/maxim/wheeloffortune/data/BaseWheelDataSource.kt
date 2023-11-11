@@ -4,6 +4,7 @@ import com.maxim.wheeloffortune.data.room.ItemRoomModel
 import com.maxim.wheeloffortune.data.room.RoomDao
 import com.maxim.wheeloffortune.data.room.WheelRoomModel
 import com.maxim.wheeloffortune.domain.EmptyItemListException
+import com.maxim.wheeloffortune.domain.EmptyItemNameException
 import com.maxim.wheeloffortune.domain.main.DomainItem
 
 class BaseWheelDataSource(
@@ -43,6 +44,13 @@ class BaseWheelDataSource(
     }
 
     override suspend fun endEditing(title: String) {
+        if (wheelItemsCache.getItemList().isEmpty())
+            throw EmptyItemListException()
+        wheelItemsCache.getItemList().forEachIndexed { index, item ->
+            if(item.name.isEmpty())
+                throw EmptyItemNameException(index.toString())
+        }
+
         val wheelId: Int
         if (wheelCache.isEmpty()) {
             wheelId = dao.insertWheel(WheelRoomModel(null, title)).toInt()

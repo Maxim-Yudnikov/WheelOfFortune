@@ -66,6 +66,7 @@ class EditViewModelTest {
         }
         interactor.checkEndEditing(1, "title")
         assertEquals(1, check)
+        communication.checkState(EditState.Success)
     }
 
     @Test
@@ -207,9 +208,10 @@ class EditViewModelTest {
             assertEquals(secondArg, changeItemColorSecondValue)
         }
 
-        override suspend fun endEditing(title: String) {
+        override suspend fun endEditing(title: String): String {
             endEditingCounter++
             endEditingValue = title
+            return "success"
         }
 
         override fun cancelEditing() {
