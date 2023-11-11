@@ -2,6 +2,7 @@ package com.maxim.wheeloffortune.presentation.main
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -60,7 +61,7 @@ class WheelFragment : BaseFragment() {
             }
         }
 
-
+        viewModel.openItem(requireArguments().getInt(WHEEL_ID))
 
         val itemsTextView = view.findViewById<TextView>(R.id.itemsTextView)
         val resultTextView = view.findViewById<TextView>(R.id.resultTextView)
@@ -87,10 +88,12 @@ class WheelFragment : BaseFragment() {
     companion object {
         private const val TITLE = "TITLE"
         private const val LIST = "LIST"
-        fun newInstance(title: String, list: List<UiItem.BaseUiItem>): WheelFragment {
+        private const val WHEEL_ID = "WHEEL_ID"
+        fun newInstance(id: Int, title: String, list: List<UiItem.BaseUiItem>): WheelFragment {
             val fragment = WheelFragment()
             Bundle().also {
                 it.putString(TITLE, title)
+                it.putInt(WHEEL_ID, id)
                 list.forEachIndexed { index, _ ->
                     it.putSerializable("$LIST$index", list[index])
                 }

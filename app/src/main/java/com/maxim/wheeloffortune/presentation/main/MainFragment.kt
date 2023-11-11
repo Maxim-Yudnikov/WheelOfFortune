@@ -26,11 +26,10 @@ class MainFragment() : BaseFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         val adapter = RecyclerViewAdapter(communication, object : RecyclerViewAdapter.Listener {
             override fun onClick(id: Int, title: String, list: List<UiItem.BaseUiItem>) {
-                viewModel.openItem(id)
                 if (id == -1)
                     replaceFragment(EditFragment(), true)
                 else
-                    replaceFragment(WheelFragment.newInstance(title, list), true)
+                    replaceFragment(WheelFragment.newInstance(id, title, list), true)
             }
         })
         recyclerView.adapter = adapter

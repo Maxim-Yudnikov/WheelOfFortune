@@ -53,7 +53,7 @@ class BaseWheelDataSource(
     }
 
     override fun cancelEditing() {
-        wheelCache.clear()
+//        wheelCache.clear()
         wheelItemsCache.clear()
     }
 

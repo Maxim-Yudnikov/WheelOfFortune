@@ -17,7 +17,11 @@ abstract class BaseFragment: Fragment() {
     protected lateinit var editViewModel: EditViewModel
 
     protected fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
-        (requireActivity() as MainActivity).replaceFragment(fragment, addToBackStack)
+        (requireActivity() as FragmentManager).replaceFragment(fragment, addToBackStack)
+    }
+
+    protected fun popBackStack() {
+        (requireActivity() as FragmentManager).popBackStack()
     }
 
     protected abstract val onBackPressed: () -> Unit

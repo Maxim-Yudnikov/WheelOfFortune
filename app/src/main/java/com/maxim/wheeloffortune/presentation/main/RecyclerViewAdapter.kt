@@ -1,5 +1,6 @@
 package com.maxim.wheeloffortune.presentation.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,9 @@ class RecyclerViewAdapter(
         fun bind(item: UiItem) {
             val textView = itemView.findViewById<TextView>(R.id.titleTextView)
             item.showText(textView)
-            itemView.setOnClickListener { item.onClick(listener) }
+            itemView.setOnClickListener {
+                item.onClick(listener)
+            }
         }
     }
 

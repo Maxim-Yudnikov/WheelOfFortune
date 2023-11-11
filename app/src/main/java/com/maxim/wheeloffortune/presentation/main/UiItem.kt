@@ -1,5 +1,6 @@
 package com.maxim.wheeloffortune.presentation.main
 
+import android.util.Log
 import android.widget.TextView
 import com.maxim.wheeloffortune.presentation.edit.EditRecyclerViewAdapter
 import java.io.Serializable

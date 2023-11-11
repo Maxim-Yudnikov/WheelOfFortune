@@ -57,15 +57,16 @@ class EditFragment() : BaseFragment() {
             editViewModel.createItem()
         }
         saveButton.setOnClickListener {
-            editViewModel.endEditing(titleEditText.text.toString())
-            replaceFragment(MainFragment())
+            editViewModel.endEditing(titleEditText.text.toString()) {
+                replaceFragment(MainFragment())
+            }
         }
     }
 
     override val onBackPressed = {
         editViewModel.cancelEditing()
         adapter.clear()
-        replaceFragment(MainFragment())
+        popBackStack()
     }
 
     companion object  {

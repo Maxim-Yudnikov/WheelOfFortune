@@ -49,9 +49,10 @@ class EditViewModel(
         interactor.changeItemColor(id, color)
     }
 
-    fun endEditing(title: String) {
+    fun endEditing(title: String, onEnd: () -> Unit) {
         viewModelScope.launch(dispatcher) {
             interactor.endEditing(title)
+            onEnd.invoke()
         }
     }
 
