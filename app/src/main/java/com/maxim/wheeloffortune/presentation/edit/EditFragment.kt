@@ -59,7 +59,8 @@ class EditFragment() : BaseFragment() {
 
         val newItemButton = view.findViewById<Button>(R.id.newItemButton)
         val saveButton = view.findViewById<Button>(R.id.saveButton)
-        val titleEditText = view.findViewById<TextInputLayout>(R.id.titleEditText).editText!!
+        val textInputLayout = view.findViewById<TextInputLayout>(R.id.titleEditText)
+        val titleEditText = textInputLayout.editText!!
 
         if (title != null) titleEditText.setText(title)
 
@@ -70,6 +71,10 @@ class EditFragment() : BaseFragment() {
             editViewModel.endEditing(titleEditText.text.toString()) {
                 replaceFragment(MainFragment())
             }
+        }
+
+        editViewModel.observeState(this) {
+            it.apply(textInputLayout)
         }
     }
 

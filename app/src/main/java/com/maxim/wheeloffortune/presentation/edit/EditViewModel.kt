@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class EditViewModel(
     private val interactor: EditInteractor,
     private val communication: EditCommunication,
+    private val titleValidator: UiValidator,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
     fun deleteWheel() {
@@ -50,10 +51,17 @@ class EditViewModel(
     }
 
     fun endEditing(title: String, onEnd: () -> Unit) {
+        if (titleValidator.isValid(title))
         viewModelScope.launch(dispatcher) {
             interactor.endEditing(title)
             onEnd.invoke()
+        } else {
+            communication.showState(EditState.TitleError(titleValidator.getMessage()))
         }
+    }
+
+    fun observeState(owner: LifecycleOwner, observer: Observer<EditState>) {
+        communication.observeState(owner, observer)
     }
 
     fun cancelEditing() {

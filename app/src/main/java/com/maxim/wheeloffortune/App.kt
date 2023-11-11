@@ -9,6 +9,7 @@ import com.maxim.wheeloffortune.domain.BaseFailureHandler
 import com.maxim.wheeloffortune.domain.edit.BaseEditInteractor
 import com.maxim.wheeloffortune.domain.main.BaseInteractor
 import com.maxim.wheeloffortune.presentation.edit.BaseEditCommunication
+import com.maxim.wheeloffortune.presentation.edit.BaseTitleUiValidator
 import com.maxim.wheeloffortune.presentation.edit.EditCommunication
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
 import com.maxim.wheeloffortune.presentation.main.BaseCommunication
@@ -32,6 +33,10 @@ class App : Application() {
         viewModel = MainViewModel(BaseInteractor(dataSource), communication)
 
         editCommunication = BaseEditCommunication()
-        editViewModel = EditViewModel(BaseEditInteractor(dataSource, BaseFailureHandler()), editCommunication)
+        editViewModel = EditViewModel(
+            BaseEditInteractor(dataSource, BaseFailureHandler()),
+            editCommunication,
+            BaseTitleUiValidator(3)
+        )
     }
 }

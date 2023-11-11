@@ -13,7 +13,7 @@ import com.maxim.wheeloffortune.SimpleTextWatcher
 import com.maxim.wheeloffortune.presentation.main.UiItem
 
 class EditRecyclerViewAdapter(
-    private val communication: EditCommunication,
+    private val communication: ListEditCommunication,
     private val listener: Listener
 ) : RecyclerView.Adapter<EditRecyclerViewAdapter.ViewHolder>() {
     private val textWatchers = mutableListOf<Pair<EditText, SimpleTextWatcher>>()

@@ -5,7 +5,9 @@ import androidx.lifecycle.Observer
 import com.maxim.wheeloffortune.domain.edit.EditInteractor
 import com.maxim.wheeloffortune.domain.main.DomainItem
 import com.maxim.wheeloffortune.presentation.edit.EditCommunication
+import com.maxim.wheeloffortune.presentation.edit.EditState
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
+import com.maxim.wheeloffortune.presentation.edit.UiValidator
 import com.maxim.wheeloffortune.presentation.main.UiItem
 import kotlinx.coroutines.Dispatchers
 import org.junit.*
@@ -15,12 +17,14 @@ class EditViewModelTest {
     private lateinit var viewModel: EditViewModel
     private lateinit var interactor: FakeInteractor
     private lateinit var communication: FakeCommunication
+    private lateinit var uiValidator: FakeUiValidator
 
     @Before
     fun before() {
         interactor = FakeInteractor()
         communication = FakeCommunication()
-        viewModel = EditViewModel(interactor = interactor, communication, Dispatchers.Unconfined)
+        uiValidator = FakeUiValidator()
+        viewModel = EditViewModel(interactor = interactor, communication, uiValidator, Dispatchers.Unconfined)
     }
 
     @Test
@@ -56,11 +60,24 @@ class EditViewModelTest {
     @Test
     fun test_end_editing() {
         var check = 0
+        uiValidator.isValid = true
         viewModel.endEditing(title = "title") {
             check = 1
         }
         interactor.checkEndEditing(1, "title")
         assertEquals(1, check)
+    }
+
+    @Test
+    fun test_end_editing_incorrect_title() {
+        var check = 0
+        uiValidator.isValid = false
+        uiValidator.showMessage = "Empty title"
+        viewModel.endEditing("") {
+            check = 1
+        }
+        communication.checkState(EditState.TitleError("Empty title"))
+        assertEquals(0, check)
     }
 
     @Test
@@ -74,8 +91,30 @@ class EditViewModelTest {
         )
     }
 
+
+    private class FakeUiValidator() : UiValidator {
+        var showMessage = ""
+        var isValid = true
+        override fun getMessage(): String = showMessage
+
+        override fun isValid(value: String): Boolean = isValid
+    }
+
     private class FakeCommunication : EditCommunication {
         private val list = mutableListOf<UiItem>()
+        private var state: EditState? = null
+        override fun showState(state: EditState) {
+            this.state = state
+        }
+
+        fun checkState(state: EditState) {
+            assertEquals(state, this.state)
+        }
+
+        override fun observeState(owner: LifecycleOwner, observer: Observer<EditState>) {
+            TODO("Not yet implemented")
+        }
+
         override fun showList(list: List<UiItem>) {
             this.list.clear()
             this.list.addAll(list)
