@@ -1,7 +1,11 @@
 package com.maxim.wheeloffortune.presentation.edit
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -15,6 +19,7 @@ import com.maxim.wheeloffortune.presentation.main.MainFragment
 
 class EditFragment() : BaseFragment() {
     private lateinit var adapter: EditRecyclerViewAdapter
+    private var title: String? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,9 +31,10 @@ class EditFragment() : BaseFragment() {
     override var actionBarTitle = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val title = arguments?.getString(TITLE)
-        actionBarTitle = if(title == null) "New wheel" else "Edit $title"
+        title = arguments?.getString(TITLE)
+        actionBarTitle = if (title == null) "New wheel" else "Edit $title"
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         val recyclerView = view.findViewById<RecyclerView>(R.id.itemsRecyclerView)
         editCommunication.clear()
         adapter =
@@ -51,7 +57,7 @@ class EditFragment() : BaseFragment() {
         val saveButton = view.findViewById<Button>(R.id.saveButton)
         val titleEditText = view.findViewById<TextInputLayout>(R.id.titleEditText).editText!!
 
-        if(title != null) titleEditText.setText(title)
+        if (title != null) titleEditText.setText(title)
 
         newItemButton.setOnClickListener {
             editViewModel.createItem()
@@ -63,13 +69,30 @@ class EditFragment() : BaseFragment() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.deleteWheel -> {
+                editViewModel.deleteWheel()
+                replaceFragment(MainFragment())
+            }
+        }
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if (title != null) {
+            inflater.inflate(R.menu.edit_menu, menu)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override val onBackPressed = {
         editViewModel.cancelEditing()
         adapter.clear()
         popBackStack()
     }
 
-    companion object  {
+    companion object {
         private const val TITLE = "TITLE"
         fun newInstance(title: String): EditFragment {
             val fragment = EditFragment()

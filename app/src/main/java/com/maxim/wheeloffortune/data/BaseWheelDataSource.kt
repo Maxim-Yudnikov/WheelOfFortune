@@ -13,6 +13,7 @@ class BaseWheelDataSource(
     override suspend fun deleteWheel() {
         dao.deleteWheel(wheelCache.getCachedId())
         wheelCache.clear()
+        wheelItemsCache.clear()
     }
 
     override fun createNewItem() {
@@ -53,7 +54,6 @@ class BaseWheelDataSource(
     }
 
     override fun cancelEditing() {
-//        wheelCache.clear()
         wheelItemsCache.clear()
     }
 
