@@ -41,7 +41,7 @@ class MainViewModelTest {
     @Test
     fun test_open_item() {
         viewModel.openItem(id = 123)
-        interactor.checkOpenItemWasCalledCount(1)
+        interactor.checkOpenItemWasCalled(1)
         interactor.checkOpenItemWasCalledWith(123)
     }
 
@@ -52,7 +52,11 @@ class MainViewModelTest {
         assertEquals(expected, communication.stateList)
     }
 
-
+    @Test
+    fun test_close_item() {
+        viewModel.closeItem()
+        interactor.checkCloseItemCheckWasCalled(1)
+    }
 
     private class FakeCommunication : Communication {
         var itemList: List<UiItem> = emptyList()
@@ -84,6 +88,7 @@ class MainViewModelTest {
     private class FakeInteractor : Interactor {
         private var openItemCounter = 0
         private var openItemValue = -1
+        private var closeItemCounter = 0
         override suspend fun getItemList(): List<DomainItem> {
             return listOf(DomainItem.BaseDomainWheel(24,"title", emptyList()), DomainItem.Empty)
         }
@@ -95,7 +100,16 @@ class MainViewModelTest {
         override suspend fun rotate(): String {
             return "Item"
         }
-        fun checkOpenItemWasCalledCount(count: Int) {
+
+        override fun closeItem() {
+            closeItemCounter++
+        }
+
+        fun checkCloseItemCheckWasCalled(count: Int) {
+            assertEquals(count, closeItemCounter)
+        }
+
+        fun checkOpenItemWasCalled(count: Int) {
             assertEquals(count, openItemCounter)
         }
 

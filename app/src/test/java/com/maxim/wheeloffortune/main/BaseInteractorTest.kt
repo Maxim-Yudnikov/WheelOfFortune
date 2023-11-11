@@ -39,10 +39,17 @@ class BaseInteractorTest {
         assertEquals("Random Name", actual)
     }
 
+    @Test
+    fun test_close_wheel() {
+        interactor.closeItem()
+        dataSource.checkCloseWheelWasCalled(1)
+    }
+
 
     private class FakeDataSource : WheelMainDataSource {
         private var cacheCounter = 0
         private var cacheValue = -1
+        private var closeWheelCounter = 0
         override suspend fun getWheelList(): List<DomainItem.BaseDomainWheel> {
             return listOf(DomainItem.BaseDomainWheel(44, "Title", emptyList()))
         }
@@ -54,6 +61,14 @@ class BaseInteractorTest {
 
         override suspend fun getRandomItemName(): String {
             return "Random Name"
+        }
+
+        override fun closeWheel() {
+            closeWheelCounter++
+        }
+
+        fun checkCloseWheelWasCalled(count: Int) {
+            assertEquals(count, closeWheelCounter)
         }
 
         fun checkCache(count: Int, value: Int) {

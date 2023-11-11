@@ -1,7 +1,12 @@
 package com.maxim.wheeloffortune.edit
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.maxim.wheeloffortune.domain.edit.EditInteractor
+import com.maxim.wheeloffortune.domain.main.DomainItem
+import com.maxim.wheeloffortune.presentation.edit.EditCommunication
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
+import com.maxim.wheeloffortune.presentation.main.UiItem
 import kotlinx.coroutines.Dispatchers
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -9,11 +14,13 @@ import org.junit.Assert.assertEquals
 class EditViewModelTest {
     private lateinit var viewModel: EditViewModel
     private lateinit var interactor: FakeInteractor
+    private lateinit var communication: FakeCommunication
 
     @Before
     fun before() {
         interactor = FakeInteractor()
-        viewModel = EditViewModel(interactor = interactor, Dispatchers.Unconfined)
+        communication = FakeCommunication()
+        viewModel = EditViewModel(interactor = interactor, communication, Dispatchers.Unconfined)
     }
 
     @Test
@@ -48,10 +55,48 @@ class EditViewModelTest {
 
     @Test
     fun test_end_editing() {
-        viewModel.endEditing(title = "title")
+        var check = 0
+        viewModel.endEditing(title = "title") {
+            check = 1
+        }
         interactor.checkEndEditing(1, "title")
+        assertEquals(1, check)
     }
 
+    @Test
+    fun test_get_item_list() {
+        viewModel.getItemList()
+        communication.checkList(
+            listOf(
+                UiItem.BaseUiItem("Name", 0),
+                UiItem.BaseUiItem("Name 2", 1)
+            )
+        )
+    }
+
+    private class FakeCommunication : EditCommunication {
+        private val list = mutableListOf<UiItem>()
+        override fun showList(list: List<UiItem>) {
+            this.list.clear()
+            this.list.addAll(list)
+        }
+
+        fun checkList(list: List<UiItem>) {
+            assertEquals(list, this.list)
+        }
+
+        override fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
+            TODO("Not yet implemented")
+        }
+
+        override fun getList(): List<UiItem> {
+            TODO("Not yet implemented")
+        }
+
+        override fun clear() {
+            TODO("Not yet implemented")
+        }
+    }
 
     private class FakeInteractor : EditInteractor {
         private var deleteWheelCounter = 0
@@ -85,6 +130,13 @@ class EditViewModelTest {
         override suspend fun deleteItem(id: Int) {
             deleteItemCounter++
             deleteItemValue = id
+        }
+
+        override fun getList(): List<DomainItem> {
+            return listOf(
+                DomainItem.BaseDomainItem("Name", 0),
+                DomainItem.BaseDomainItem("Name 2", 1)
+            )
         }
 
         fun checkDeleteItem(count: Int, value: Int) {

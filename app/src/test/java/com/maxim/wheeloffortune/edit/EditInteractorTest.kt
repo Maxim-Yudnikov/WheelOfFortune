@@ -1,8 +1,11 @@
 package com.maxim.wheeloffortune.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
+import com.maxim.wheeloffortune.domain.BaseFailureHandler
+import com.maxim.wheeloffortune.domain.EmptyItemListException
 import com.maxim.wheeloffortune.domain.edit.BaseEditInteractor
 import com.maxim.wheeloffortune.domain.edit.EditInteractor
+import com.maxim.wheeloffortune.domain.main.DomainItem
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -14,7 +17,7 @@ class EditInteractorTest {
     @Before
     fun before() {
         dataSource = FakeDataSource()
-        interactor = BaseEditInteractor(dataSource = dataSource)
+        interactor = BaseEditInteractor(dataSource = dataSource, BaseFailureHandler())
     }
 
     @Test
@@ -22,6 +25,7 @@ class EditInteractorTest {
         interactor.deleteWheel()
         dataSource.checkDeleteWheelWasCalled(1)
     }
+
     @Test
     fun test_create_item() {
         interactor.createItem()
@@ -52,6 +56,22 @@ class EditInteractorTest {
         dataSource.checkEndEditing(1, "Title")
     }
 
+    @Test
+    fun test_get_item_list_success() = runBlocking {
+        val actual = interactor.getList()
+        val expected =
+            listOf(DomainItem.BaseDomainItem("Name", 0), DomainItem.BaseDomainItem("Name 2", 1))
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun test_get_item_list_failed() = runBlocking {
+        dataSource.returnSuccess = false
+        val actual = interactor.getList()
+        val expected = listOf(DomainItem.FailedDomainItem("Empty item list"))
+        assertEquals(expected, actual)
+    }
+
     private class FakeDataSource : WheelEditDataSource {
         private var deleteWheelCounter = 0
         private var createNewItemCounter = 0
@@ -65,6 +85,7 @@ class EditInteractorTest {
         private var changeItemColorSecondValue = -1
         private var endEditingCounter = 0
         private var endEditingValue = ""
+        var returnSuccess = true
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -84,6 +105,16 @@ class EditInteractorTest {
         override fun deleteItem(id: Int) {
             deleteItemCounter++
             deleteItemValue = id
+        }
+
+        override fun getList(): List<DomainItem.BaseDomainItem> {
+            if (returnSuccess)
+                return listOf(
+                    DomainItem.BaseDomainItem("Name", 0),
+                    DomainItem.BaseDomainItem("Name 2", 1)
+                )
+            else
+                throw EmptyItemListException()
         }
 
         fun checkDeleteItem(count: Int, value: Int) {
