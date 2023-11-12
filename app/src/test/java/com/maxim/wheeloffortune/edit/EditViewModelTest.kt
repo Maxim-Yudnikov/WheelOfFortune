@@ -7,6 +7,7 @@ import com.maxim.wheeloffortune.domain.main.DomainItem
 import com.maxim.wheeloffortune.presentation.edit.EditCommunication
 import com.maxim.wheeloffortune.presentation.edit.EditState
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
+import com.maxim.wheeloffortune.presentation.edit.EndEditResult
 import com.maxim.wheeloffortune.presentation.edit.UiValidator
 import com.maxim.wheeloffortune.presentation.main.UiItem
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ class EditViewModelTest {
     }
 
     @Test
-    fun test_end_editing() {
+    fun test_end_editing_success() {
         var check = 0
         uiValidator.isValid = true
         viewModel.endEditing(title = "title") {
@@ -67,6 +68,19 @@ class EditViewModelTest {
         interactor.checkEndEditing(1, "title")
         assertEquals(1, check)
         communication.checkState(EditState.Success)
+    }
+
+    @Test
+    fun test_end_editing_failed_list() {
+        var check = 0
+        uiValidator.isValid = true
+        interactor.returnSuccess = false
+        viewModel.endEditing(title = "title") {
+            check = 1
+        }
+        interactor.checkEndEditing(1, "title")
+        assertEquals(0, check)
+        communication.checkState(EditState.ItemListError("Error"))
     }
 
     @Test
@@ -151,6 +165,7 @@ class EditViewModelTest {
         private var changeItemColorSecondValue = -1
         private var endEditingCounter = 0
         private var endEditingValue = ""
+        var returnSuccess = true
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -208,10 +223,13 @@ class EditViewModelTest {
             assertEquals(secondArg, changeItemColorSecondValue)
         }
 
-        override suspend fun endEditing(title: String): String {
+        override suspend fun endEditing(title: String): EndEditResult {
             endEditingCounter++
             endEditingValue = title
-            return "success"
+            return if(returnSuccess)
+                EndEditResult.Success
+            else
+                EndEditResult.Failed("Error")
         }
 
         override fun cancelEditing() {
