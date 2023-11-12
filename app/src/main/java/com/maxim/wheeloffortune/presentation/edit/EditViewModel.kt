@@ -38,10 +38,6 @@ class EditViewModel(
         communication.showList(interactor.getList().map { it.mapToUi() })
     }
 
-    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
-        communication.observeList(owner, observer)
-    }
-
     fun changeItemName(id: Int, title: String) {
         interactor.changeItemName(id, title)
     }
@@ -69,11 +65,15 @@ class EditViewModel(
         communication.showState(EditState.Success)
     }
 
-    fun observeState(owner: LifecycleOwner, observer: Observer<EditState>) {
-        communication.observeState(owner, observer)
-    }
-
     fun cancelEditing() {
         interactor.cancelEditing()
+    }
+
+    fun observeList(owner: LifecycleOwner, observer: Observer<List<UiItem>>) {
+        communication.observeList(owner, observer)
+    }
+
+    fun observeState(owner: LifecycleOwner, observer: Observer<EditState>) {
+        communication.observeState(owner, observer)
     }
 }

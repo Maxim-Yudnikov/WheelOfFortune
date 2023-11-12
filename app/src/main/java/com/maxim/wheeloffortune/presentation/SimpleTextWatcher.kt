@@ -1,4 +1,4 @@
-package com.maxim.wheeloffortune
+package com.maxim.wheeloffortune.presentation
 
 import android.text.Editable
 import android.text.TextWatcher

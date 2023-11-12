@@ -2,7 +2,6 @@ package com.maxim.wheeloffortune.presentation.edit
 
 import android.content.Context
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.maxim.wheeloffortune.R
-import com.maxim.wheeloffortune.SimpleTextWatcher
+import com.maxim.wheeloffortune.presentation.SimpleTextWatcher
 import com.maxim.wheeloffortune.presentation.main.UiItem
 
 class EditRecyclerViewAdapter(

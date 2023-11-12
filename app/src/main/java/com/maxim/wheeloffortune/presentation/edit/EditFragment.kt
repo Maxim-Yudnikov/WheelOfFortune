@@ -2,7 +2,6 @@ package com.maxim.wheeloffortune.presentation.edit
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,15 +11,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.maxim.wheeloffortune.R
-import com.maxim.wheeloffortune.SimpleTextWatcher
+import com.maxim.wheeloffortune.presentation.SimpleTextWatcher
 import com.maxim.wheeloffortune.presentation.BaseFragment
 import com.maxim.wheeloffortune.presentation.main.MainFragment
-import com.maxim.wheeloffortune.presentation.main.WheelFragment
 
 class EditFragment() : BaseFragment() {
     private lateinit var adapter: EditRecyclerViewAdapter
