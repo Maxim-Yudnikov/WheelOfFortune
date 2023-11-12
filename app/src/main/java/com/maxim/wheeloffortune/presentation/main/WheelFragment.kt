@@ -83,9 +83,8 @@ class WheelFragment : BaseFragment() {
         val wheelItemsList = mutableListOf<WheelItem>()
         list.forEach { item ->
             val data = item.getData()
-            val wheelItem = WheelItem(
-                ResourcesCompat.getColor(resources, data.second, null),
-                BitmapFactory.decodeResource(resources, R.drawable.c2), data.first
+            val wheelItem = WheelItem(0,
+                ResourcesCompat.getColor(resources, data.second, null), data.first
             )
 
             wheelItemsList.add(wheelItem)

@@ -9,10 +9,11 @@
 
     <com.bluehomestudio.luckywheel.LuckyWheel
         android:id="@+id/wheel"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="100dp"
-        app:background_color="@color/black" />
+        app:background_color="@color/black"
+        app:text_size="20sp" />
 
     <TextView
         android:id="@+id/resultTextView"

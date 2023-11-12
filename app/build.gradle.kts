@@ -43,7 +43,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.room:room-ktx:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
-    implementation("com.github.mmoamenn:LuckyWheel_Android:0.3.0")
+    //implementation("com.github.mmoamenn:LuckyWheel_Android:0.3.0")
+    implementation("com.github.alirezaafkar:LuckyWheel_Android:0.5.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
