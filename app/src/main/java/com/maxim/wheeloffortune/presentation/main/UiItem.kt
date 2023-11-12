@@ -8,7 +8,7 @@ import java.io.Serializable
 
 interface UiItem {
     fun showText(textView: TextView)
-    fun getColor(): Int
+    fun getData(): Pair<String, Int>
     fun same(item: UiItem): Boolean
     fun sameContent(item: UiItem): Boolean
     fun onClick(listener: RecyclerViewAdapter.Listener)
@@ -17,7 +17,7 @@ interface UiItem {
     abstract class Abstract() : UiItem {
         override fun showText(textView: TextView) {}
 
-        override fun getColor(): Int = -1
+        override fun getData(): Pair<String, Int> = Pair("", -1)
 
         override fun same(item: UiItem): Boolean = false
 
@@ -60,14 +60,15 @@ interface UiItem {
             textView.text = name
         }
 
-        override fun getColor(): Int {
-            return when (color) {
+        override fun getData(): Pair<String, Int> {
+            val color = when (color) {
                 0 -> R.color.first
                 1 -> R.color.second
                 2 -> R.color.third
                 3 -> R.color.fourth
                 else -> R.color.fifth
             }
+            return Pair(name, color)
         }
 
         override fun same(item: UiItem): Boolean {

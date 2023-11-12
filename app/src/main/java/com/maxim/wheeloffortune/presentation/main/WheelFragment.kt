@@ -1,12 +1,8 @@
 package com.maxim.wheeloffortune.presentation.main
 
-import android.graphics.Color
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
+import com.bluehomestudio.luckywheel.LuckyWheel
+import com.bluehomestudio.luckywheel.WheelItem
 import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.presentation.BaseFragment
 import com.maxim.wheeloffortune.presentation.edit.EditFragment
@@ -77,37 +76,24 @@ class WheelFragment : BaseFragment() {
         if (arguments?.getInt(WHEEL_ID) != -1)
             viewModel.openItem(requireArguments().getInt(WHEEL_ID))
 
-        val itemsTextView = view.findViewById<TextView>(R.id.itemsTextView)
+        val wheel = view.findViewById<LuckyWheel>(R.id.wheel)
         val resultTextView = view.findViewById<TextView>(R.id.resultTextView)
         val actionButton = view.findViewById<Button>(R.id.actionButton)
 
-        val nameList = mutableListOf<String>()
-        val colorList = mutableListOf<Int>()
-        list.forEach {
-            it.showText(itemsTextView)
-            nameList.add(itemsTextView.text.toString())
-            colorList.add(it.getColor())
-        }
-        val sb = StringBuilder()
-        val indexes = mutableListOf<Pair<Int, Int>>()
-        nameList.forEach {
-            val index = sb.length
-            sb.append("$it\n")
-            indexes.add(Pair(index, sb.length))
-        }
-        val spannable = SpannableString(sb)
-        indexes.forEachIndexed { index, item ->
-            val color = requireActivity().getColor(colorList[index])
-            spannable.setSpan(
-                ForegroundColorSpan(color),
-                item.first,
-                item.second,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        val wheelItemsList = mutableListOf<WheelItem>()
+        list.forEach { item ->
+            val data = item.getData()
+            val wheelItem = WheelItem(
+                ResourcesCompat.getColor(resources, data.second, null),
+                BitmapFactory.decodeResource(resources, R.drawable.c2), data.first
             )
+
+            wheelItemsList.add(wheelItem)
         }
-        itemsTextView.setText(spannable, TextView.BufferType.SPANNABLE)
+        wheel.addWheelItems(wheelItemsList)
+
         actionButton.setOnClickListener {
-            viewModel.rotate()
+            viewModel.rotate(wheel, list)
         }
         viewModel.observe(this) {
             it.apply(resultTextView, actionButton)

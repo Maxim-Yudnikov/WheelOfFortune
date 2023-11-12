@@ -1,9 +1,11 @@
 package com.maxim.wheeloffortune.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bluehomestudio.luckywheel.LuckyWheel
 import com.maxim.wheeloffortune.domain.main.Interactor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +15,7 @@ class MainViewModel(
     private val interactor: Interactor,
     private val communication: Communication,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main
-): ViewModel() {
+) : ViewModel() {
     fun getItemList() {
         viewModelScope.launch(dispatcher) {
             communication.showList(interactor.getItemList().map { it.mapToUi() })
@@ -30,11 +32,17 @@ class MainViewModel(
         interactor.closeItem()
     }
 
-    fun rotate() {
+    fun rotate(wheel: LuckyWheel, itemList: List<UiItem>) {
         communication.showState(State.Rotating)
-        viewModelScope.launch(dispatcher) {
-            communication.showState(State.Done(interactor.rotate()))
+
+        val random = itemList.indices.random()
+        val randomItem = itemList[random]
+
+        wheel.setLuckyWheelReachTheTarget {
+            communication.showState(State.Done(randomItem.getData().first))
         }
+
+        wheel.rotateWheelTo(random+1)
     }
 
     fun observe(owner: LifecycleOwner, observer: Observer<State>) {
