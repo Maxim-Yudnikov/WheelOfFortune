@@ -1,10 +1,12 @@
 package com.maxim.wheeloffortune.presentation.edit
 
+import android.content.Context
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +19,9 @@ class EditRecyclerViewAdapter(
     private val listener: Listener
 ) : RecyclerView.Adapter<EditRecyclerViewAdapter.ViewHolder>() {
     private val textWatchers = mutableListOf<Pair<EditText, SimpleTextWatcher>>()
+    private var lastLength = 0
     fun update() {
+        lastLength = textWatchers.size
         textWatchers.forEach {
             it.first.removeTextChangedListener(it.second)
         }
@@ -41,22 +45,29 @@ class EditRecyclerViewAdapter(
         ) {
         }
 
-        class Base(view: View, private val listener: Listener) : ViewHolder(view) {
+        class Base(view: View, private val listener: Listener, private val setFocus: Boolean) :
+            ViewHolder(view) {
             override fun bind(
                 item: UiItem,
                 position: Int,
                 textWatchers: MutableList<Pair<EditText, SimpleTextWatcher>>
             ) {
-                val nameTextView = itemView.findViewById<EditText>(R.id.nameTextView)
+                val nameTextView = itemView.findViewById<EditText>(R.id.nameEditText)
                 item.showText(nameTextView)
                 val textWatcher = object : SimpleTextWatcher() {
                     override fun afterTextChanged(s: Editable?) {
-                        Log.d("MyLog", "Position: $position")
                         listener.onTextChanged(position, s.toString())
                     }
                 }
                 textWatchers.add(Pair(nameTextView, textWatcher))
                 nameTextView.addTextChangedListener(textWatcher)
+                if (setFocus) {
+                    val imm =
+                        nameTextView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    nameTextView.requestFocus()
+                    imm.toggleSoftInput(0, 0)
+                    imm.showSoftInput(nameTextView, 0)
+                }
 
                 val deleteImageButton = itemView.findViewById<ImageButton>(R.id.deleteItem)
                 deleteImageButton.setOnClickListener {
@@ -85,18 +96,27 @@ class EditRecyclerViewAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (communication.getList()[position] is UiItem.FailedUiItem) 1 else 0
+        return if (communication.getList()[position] is UiItem.FailedUiItem) 1
+        else if (position == itemCount - 1 && lastLength < itemCount) 2
+        else 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            if (viewType == 0)
-                R.layout.item_item else R.layout.empty_item_list, parent, false
+            if (viewType == 1)
+                R.layout.empty_item_list else R.layout.item_item, parent, false
         )
-        return if(viewType == 0) ViewHolder.Base(view, listener) else EmptyViewHolder(view)
+        val setFocus = viewType == 2
+        return if (viewType == 1) EmptyViewHolder(view) else ViewHolder.Base(
+            view,
+            listener,
+            setFocus
+        )
     }
 
-    override fun getItemCount(): Int = communication.getList().size
+    override fun getItemCount(): Int {
+        return communication.getList().size
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(communication.getList()[position], position, textWatchers)

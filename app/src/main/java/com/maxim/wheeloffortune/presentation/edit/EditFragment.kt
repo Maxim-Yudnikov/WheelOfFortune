@@ -1,6 +1,7 @@
 package com.maxim.wheeloffortune.presentation.edit
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,18 +9,20 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.SimpleTextWatcher
 import com.maxim.wheeloffortune.presentation.BaseFragment
 import com.maxim.wheeloffortune.presentation.main.MainFragment
+import com.maxim.wheeloffortune.presentation.main.WheelFragment
 
 class EditFragment() : BaseFragment() {
     private lateinit var adapter: EditRecyclerViewAdapter
     private var title: String? = null
+    private lateinit var titleEditText: EditText
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +35,7 @@ class EditFragment() : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         title = arguments?.getString(TITLE)
-        actionBarTitle = if (title == null) "New wheel" else "Edit $title"
+        actionBarTitle = if (title == null) "New wheel" else "Edit wheel \"$title\""
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         val recyclerView = view.findViewById<RecyclerView>(R.id.itemsRecyclerView)
@@ -43,6 +46,7 @@ class EditFragment() : BaseFragment() {
             EditRecyclerViewAdapter(editCommunication, object : EditRecyclerViewAdapter.Listener {
                 override fun onTextChanged(id: Int, text: String) {
                     editViewModel.changeItemName(id, text)
+                    listErrorTextView.text = ""
                     listErrorTextView.visibility = View.GONE
                 }
 
@@ -63,39 +67,57 @@ class EditFragment() : BaseFragment() {
         val newItemButton = view.findViewById<Button>(R.id.newItemButton)
         val saveButton = view.findViewById<Button>(R.id.saveButton)
         val textInputLayout = view.findViewById<TextInputLayout>(R.id.titleEditText)
-        val titleEditText = textInputLayout.editText!!
+        titleEditText = textInputLayout.editText!!
 
-        if (title != null) titleEditText.setText(title)
+        if (title != null) {
+            titleEditText.setText(title)
+        }
 
         newItemButton.setOnClickListener {
+            listErrorTextView.text = ""
             listErrorTextView.visibility = View.GONE
             editViewModel.createItem()
+            recyclerView.scrollToPosition(adapter.itemCount - 1)
         }
         saveButton.setOnClickListener {
             editViewModel.endEditing(titleEditText.text.toString()) {
-                replaceFragment(MainFragment())
+                replaceFragment(MainFragment(), showHomeButton = false)
             }
         }
-        titleEditText.addTextChangedListener (object : SimpleTextWatcher() {
+        titleEditText.addTextChangedListener(object : SimpleTextWatcher() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 textInputLayout.error = ""
                 textInputLayout.isErrorEnabled = false
             }
         })
 
+        if (savedInstanceState != null)
+            editViewModel.update()
+
         editViewModel.observeState(this) {
             it.apply(textInputLayout, listErrorTextView)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(TITLE, titleEditText.text.toString())
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null)
+            titleEditText.setText(savedInstanceState.getString(TITLE))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.deleteWheel -> {
                 editViewModel.deleteWheel()
-                replaceFragment(MainFragment())
+                replaceFragment(MainFragment(), showHomeButton = false)
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

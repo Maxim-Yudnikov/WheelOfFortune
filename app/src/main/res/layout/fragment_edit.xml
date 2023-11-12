@@ -10,13 +10,14 @@
         android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Title"
-            android:inputType="textCapSentences" />
+            android:inputType="textCapSentences"
+            android:maxLength="18" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

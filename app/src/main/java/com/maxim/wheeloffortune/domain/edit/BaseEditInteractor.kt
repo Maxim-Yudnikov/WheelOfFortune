@@ -3,6 +3,7 @@ package com.maxim.wheeloffortune.domain.edit
 import com.maxim.wheeloffortune.data.WheelEditDataSource
 import com.maxim.wheeloffortune.domain.FailureHandler
 import com.maxim.wheeloffortune.domain.main.DomainItem
+import com.maxim.wheeloffortune.presentation.edit.EndEditResult
 
 class BaseEditInteractor(
     private val dataSource: WheelEditDataSource,
@@ -36,12 +37,12 @@ class BaseEditInteractor(
         dataSource.changeItemColor(id, colorId)
     }
 
-    override suspend fun endEditing(title: String): String {
+    override suspend fun endEditing(title: String): EndEditResult {
         return try {
             dataSource.endEditing(title)
-            "success"
+            EndEditResult.Success
         } catch (e: Exception) {
-            failureHandler.handle(e).getMessage()
+            EndEditResult.Failed(failureHandler.handle(e).getMessage())
         }
     }
 

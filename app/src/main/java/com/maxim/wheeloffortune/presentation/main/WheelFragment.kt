@@ -35,12 +35,12 @@ class WheelFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.editWheel -> {
-                replaceFragment(EditFragment.newInstance(title), true)
+                replaceFragment(EditFragment.newInstance(title), true, showHomeButton = true)
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     override var actionBarTitle = ""
@@ -53,19 +53,29 @@ class WheelFragment : BaseFragment() {
         val list = mutableListOf<UiItem.BaseUiItem>()
         for (i in 0..Int.MAX_VALUE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if(requireArguments().getSerializable("$LIST$i", UiItem.BaseUiItem::class.java) != null) {
-                    list.add(requireArguments().getSerializable("$LIST$i", UiItem.BaseUiItem::class.java)!!)
+                if (requireArguments().getSerializable(
+                        "$LIST$i",
+                        UiItem.BaseUiItem::class.java
+                    ) != null
+                ) {
+                    list.add(
+                        requireArguments().getSerializable(
+                            "$LIST$i",
+                            UiItem.BaseUiItem::class.java
+                        )!!
+                    )
                 } else
                     break
             } else {
-                if(requireArguments().getSerializable("$LIST$i") != null) {
+                if (requireArguments().getSerializable("$LIST$i") != null) {
                     list.add(requireArguments().getSerializable("$LIST$i") as UiItem.BaseUiItem)
                 } else
                     break
             }
         }
 
-        viewModel.openItem(requireArguments().getInt(WHEEL_ID))
+        if (arguments?.getInt(WHEEL_ID) != -1)
+            viewModel.openItem(requireArguments().getInt(WHEEL_ID))
 
         val itemsTextView = view.findViewById<TextView>(R.id.itemsTextView)
         val resultTextView = view.findViewById<TextView>(R.id.resultTextView)
@@ -86,9 +96,14 @@ class WheelFragment : BaseFragment() {
             indexes.add(Pair(index, sb.length))
         }
         val spannable = SpannableString(sb)
-        indexes.forEachIndexed{ index, item ->
+        indexes.forEachIndexed { index, item ->
             val color = requireActivity().getColor(colorList[index])
-            spannable.setSpan(ForegroundColorSpan(color), item.first, item.second, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                ForegroundColorSpan(color),
+                item.first,
+                item.second,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         itemsTextView.setText(spannable, TextView.BufferType.SPANNABLE)
         actionButton.setOnClickListener {
@@ -119,6 +134,6 @@ class WheelFragment : BaseFragment() {
 
     override val onBackPressed = {
         viewModel.closeItem()
-        replaceFragment(MainFragment())
+        replaceFragment(MainFragment(), showHomeButton = false)
     }
 }

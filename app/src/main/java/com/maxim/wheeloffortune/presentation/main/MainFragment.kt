@@ -27,9 +27,9 @@ class MainFragment() : BaseFragment() {
         val adapter = RecyclerViewAdapter(communication, object : RecyclerViewAdapter.Listener {
             override fun onClick(id: Int, title: String, list: List<UiItem.BaseUiItem>) {
                 if (id == -1)
-                    replaceFragment(EditFragment(), true)
+                    replaceFragment(EditFragment(), true, showHomeButton = true)
                 else
-                    replaceFragment(WheelFragment.newInstance(id, title, list), true)
+                    replaceFragment(WheelFragment.newInstance(id, title, list), true, showHomeButton = true)
             }
         })
         recyclerView.adapter = adapter

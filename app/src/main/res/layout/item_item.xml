@@ -8,13 +8,14 @@
     android:orientation="horizontal">
 
     <EditText
-        android:id="@+id/nameTextView"
+        android:id="@+id/nameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="Name"
         android:inputType="textCapSentences"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:maxLength="18"/>
 
     <ImageButton
         android:id="@+id/changeColorButton"
