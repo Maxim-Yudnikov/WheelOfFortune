@@ -1,5 +1,6 @@
 package com.maxim.wheeloffortune.presentation.edit
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +12,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.SimpleTextWatcher
@@ -113,8 +116,11 @@ class EditFragment() : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.deleteWheel -> {
-                editViewModel.deleteWheel()
-                replaceFragment(MainFragment(), showHomeButton = false)
+                AlertDialog.Builder(requireContext()).setTitle("Delete the wheel? It can't be undone.")
+                    .setPositiveButton("Yes") { _, _ ->
+                        editViewModel.deleteWheel()
+                        replaceFragment(MainFragment(), showHomeButton = false)
+                    }.setNegativeButton("No") {_,_ ->}.create().show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -127,10 +133,13 @@ class EditFragment() : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override val onBackPressed = {
-        editViewModel.cancelEditing()
-        adapter.clear()
-        popBackStack()
+    override val onBackPressed: () -> Unit = {
+        AlertDialog.Builder(requireContext()).setTitle("Cancel editing? All changes will be lost.")
+            .setPositiveButton("Yes") { _, _ ->
+                editViewModel.cancelEditing()
+                adapter.clear()
+                popBackStack()
+            }.setNegativeButton("No") {_,_ ->}.create().show()
     }
 
     companion object {
