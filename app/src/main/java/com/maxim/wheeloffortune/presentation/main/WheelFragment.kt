@@ -43,37 +43,20 @@ class WheelFragment : BaseFragment() {
     }
 
     override var actionBarTitle = ""
+    override val onBackPressed = {
+        viewModel.closeItem()
+        replaceFragment(MainFragment(), showHomeButton = false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         title = arguments?.getString(TITLE)!!
         actionBarTitle = title
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        val list = mutableListOf<UiItem.BaseUiItem>()
-        for (i in 0..Int.MAX_VALUE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (requireArguments().getSerializable(
-                        "$LIST$i",
-                        UiItem.BaseUiItem::class.java
-                    ) != null
-                ) {
-                    list.add(
-                        requireArguments().getSerializable(
-                            "$LIST$i",
-                            UiItem.BaseUiItem::class.java
-                        )!!
-                    )
-                } else
-                    break
-            } else {
-                if (requireArguments().getSerializable("$LIST$i") != null) {
-                    list.add(requireArguments().getSerializable("$LIST$i") as UiItem.BaseUiItem)
-                } else
-                    break
-            }
-        }
+        val list = getItemListFromBundle(requireArguments())
 
-        if (arguments?.getInt(WHEEL_ID) != -1)
+
+        if (arguments?.getInt(WHEEL_ID) != -1 && savedInstanceState == null)
             viewModel.openItem(requireArguments().getInt(WHEEL_ID))
 
         val wheel = view.findViewById<LuckyWheel>(R.id.wheel)
@@ -83,7 +66,8 @@ class WheelFragment : BaseFragment() {
         val wheelItemsList = mutableListOf<WheelItem>()
         list.forEach { item ->
             val data = item.getData()
-            val wheelItem = WheelItem(0,
+            val wheelItem = WheelItem(
+                0,
                 ResourcesCompat.getColor(resources, data.second, null), data.first
             )
 
@@ -97,6 +81,33 @@ class WheelFragment : BaseFragment() {
         viewModel.observe(this) {
             it.apply(resultTextView, actionButton, requireContext().resources)
         }
+    }
+
+    private fun getItemListFromBundle(bundle: Bundle): List<UiItem.BaseUiItem> {
+        val list = mutableListOf<UiItem.BaseUiItem>()
+        for (i in 0..Int.MAX_VALUE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (bundle.getSerializable(
+                        "$LIST$i",
+                        UiItem.BaseUiItem::class.java
+                    ) != null
+                ) {
+                    list.add(
+                        bundle.getSerializable(
+                            "$LIST$i",
+                            UiItem.BaseUiItem::class.java
+                        )!!
+                    )
+                } else
+                    break
+            } else {
+                if (bundle.getSerializable("$LIST$i") != null) {
+                    list.add(bundle.getSerializable("$LIST$i") as UiItem.BaseUiItem)
+                } else
+                    break
+            }
+        }
+        return list
     }
 
     companion object {
@@ -115,10 +126,5 @@ class WheelFragment : BaseFragment() {
             }
             return fragment
         }
-    }
-
-    override val onBackPressed = {
-        viewModel.closeItem()
-        replaceFragment(MainFragment(), showHomeButton = false)
     }
 }
