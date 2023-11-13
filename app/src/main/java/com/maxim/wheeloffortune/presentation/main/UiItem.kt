@@ -6,33 +6,19 @@ import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.presentation.edit.EditRecyclerViewAdapter
 import java.io.Serializable
 
-interface UiItem {
-    fun showText(textView: TextView)
-    fun getData(): Pair<String, Int>
-    fun same(item: UiItem): Boolean
-    fun sameContent(item: UiItem): Boolean
-    fun onClick(listener: RecyclerViewAdapter.Listener)
-    fun changeColor(id: Int, listener: EditRecyclerViewAdapter.Listener): Int
-
-    abstract class Abstract() : UiItem {
-        override fun showText(textView: TextView) {}
-
-        override fun getData(): Pair<String, Int> = Pair("", -1)
-
-        override fun same(item: UiItem): Boolean = false
-
-        override fun sameContent(item: UiItem): Boolean = false
-
-        override fun onClick(listener: RecyclerViewAdapter.Listener) {}
-
-        override fun changeColor(id: Int, listener: EditRecyclerViewAdapter.Listener): Int = -1
-    }
+abstract class UiItem {
+    open fun showText(textView: TextView) {}
+    open fun getData(): Pair<String, Int> = Pair("", -1)
+    open fun same(item: UiItem): Boolean = false
+    open fun sameContent(item: UiItem): Boolean = false
+    open fun onClick(listener: RecyclerViewAdapter.Listener) {}
+    open fun changeColor(id: Int, listener: EditRecyclerViewAdapter.Listener): Int = -1
 
     data class BaseUiWheel(
         private val id: Int,
         private val title: String,
         private val itemList: List<BaseUiItem>
-    ) : Abstract() {
+    ) : UiItem() {
         override fun showText(textView: TextView) {
             textView.text = title
         }
@@ -50,25 +36,18 @@ interface UiItem {
         }
     }
 
-    data class FailedUiItem(private val message: String) : Abstract() {
+    data class FailedUiItem(private val message: String) : UiItem() {
 
     }
 
-    data class BaseUiItem(private val name: String, private var color: Int) : Abstract(),
+    data class BaseUiItem(private val name: String, private var color: Int) : UiItem(),
         Serializable {
         override fun showText(textView: TextView) {
             textView.text = name
         }
 
         override fun getData(): Pair<String, Int> {
-            val color = when (color) {
-                0 -> R.color.first
-                1 -> R.color.second
-                2 -> R.color.third
-                3 -> R.color.fourth
-                else -> R.color.fifth
-            }
-            return Pair(name, color)
+            return Pair(name, getColorResourceId(color))
         }
 
         override fun same(item: UiItem): Boolean {
@@ -88,7 +67,7 @@ interface UiItem {
         }
     }
 
-    object Empty : Abstract() {
+    object Empty : UiItem() {
         override fun showText(textView: TextView) {
             textView.text = "+"
         }
@@ -98,6 +77,18 @@ interface UiItem {
         override fun sameContent(item: UiItem): Boolean = true
         override fun onClick(listener: RecyclerViewAdapter.Listener) {
             listener.onClick(-1, "", emptyList())
+        }
+    }
+
+    companion object {
+        fun getColorResourceId(id: Int): Int {
+            return when (id) {
+                0 -> R.color.first
+                1 -> R.color.second
+                2 -> R.color.third
+                3 -> R.color.fourth
+                else -> R.color.fifth
+            }
         }
     }
 }

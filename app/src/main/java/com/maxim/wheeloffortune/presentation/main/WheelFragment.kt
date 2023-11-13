@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.size
 import com.bluehomestudio.luckywheel.LuckyWheel
 import com.bluehomestudio.luckywheel.WheelItem
 import com.maxim.wheeloffortune.R

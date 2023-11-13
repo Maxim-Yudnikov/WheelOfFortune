@@ -77,18 +77,7 @@ class EditRecyclerViewAdapter(
                 changeColorButton.setBackgroundResource(item.getData().second)
                 changeColorButton.setOnClickListener {
                     val color = item.changeColor(position, listener)
-                    changeColorButton.setBackgroundResource(getColorResourceId(color))
-                }
-            }
-
-            //todo fix below
-            private fun getColorResourceId(id: Int): Int {
-                return when (id) {
-                    0 -> R.color.first
-                    1 -> R.color.second
-                    2 -> R.color.third
-                    3 -> R.color.fourth
-                    else -> R.color.fifth
+                    changeColorButton.setBackgroundResource(UiItem.getColorResourceId(color))
                 }
             }
         }
