@@ -25,14 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="7dp"
         android:text="@string/items"
         android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="75dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"

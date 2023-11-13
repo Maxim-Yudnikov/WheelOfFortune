@@ -1,14 +1,15 @@
 package com.maxim.wheeloffortune.domain.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
+import com.maxim.wheeloffortune.domain.EmptyItemNameError
+import com.maxim.wheeloffortune.domain.EmptyItemNameException
 import com.maxim.wheeloffortune.domain.FailureHandler
 import com.maxim.wheeloffortune.domain.main.DomainItem
-import com.maxim.wheeloffortune.presentation.edit.EndEditResult
 
 class BaseEditInteractor(
     private val dataSource: WheelEditDataSource,
     private val failureHandler: FailureHandler
-): EditInteractor {
+) : EditInteractor {
     override suspend fun deleteWheel() {
         dataSource.deleteWheel()
     }
@@ -37,12 +38,17 @@ class BaseEditInteractor(
         dataSource.changeItemColor(id, colorId)
     }
 
-    override suspend fun endEditing(title: String): EndEditResult {
-        return try {
+    override suspend fun endEditing(
+        title: String,
+        onSuccess: () -> Unit,
+        onFailed: (message: String, position: Int) -> Unit
+    ) {
+        try {
             dataSource.endEditing(title)
-            EndEditResult.Success
+            onSuccess.invoke()
         } catch (e: Exception) {
-            EndEditResult.Failed(failureHandler.handle(e).getMessage())
+            val position = if (e is EmptyItemNameException) (e).message.toInt() else -1
+            onFailed.invoke(failureHandler.handle(e).getMessage(), position)
         }
     }
 

@@ -95,7 +95,7 @@ class WheelFragment : BaseFragment() {
             viewModel.rotate(wheel, list)
         }
         viewModel.observe(this) {
-            it.apply(resultTextView, actionButton)
+            it.apply(resultTextView, actionButton, requireContext().resources)
         }
     }
 

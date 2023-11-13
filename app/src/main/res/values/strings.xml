@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">WheelOfFortune</string>
+
+    <!-- empty_item_list -->
     <string name="empty_list">Create an item using the button \"New item\"</string>
+
+    <!-- fragment_edit -->
+    <string name="title_hint">Title</string>
+    <string name="items">Items:</string>
+    <string name="new_item_button">New item</string>
+    <string name="save_button">Save</string>
+
+    <!-- fragment_wheel -->
+    <string name="rotate_button">Rotate</string>
+    <string name="init_text">Click the button below to rotate</string>
+    <string name="rotation">Rotating…</string>
+
+    <!-- item_item -->
+    <string name="name_hint">Name</string>
 </resources>

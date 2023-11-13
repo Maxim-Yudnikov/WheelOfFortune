@@ -90,17 +90,18 @@ class EditFragment() : BaseFragment() {
             }
         })
 
-        if (savedInstanceState != null)
+        if (savedInstanceState == null)
             editViewModel.update()
 
         editViewModel.observeState(this) {
-            it.apply(textInputLayout, listErrorTextView)
+            it.apply(textInputLayout, listErrorTextView, recyclerView)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(TITLE, titleEditText.text.toString())
+        if (::titleEditText.isInitialized)
+            outState.putString(TITLE, titleEditText.text.toString())
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -112,11 +113,12 @@ class EditFragment() : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.deleteWheel -> {
-                AlertDialog.Builder(requireContext()).setTitle("Delete the wheel? It can't be undone.")
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Delete the wheel? It can't be undone.")
                     .setPositiveButton("Yes") { _, _ ->
                         editViewModel.deleteWheel()
                         replaceFragment(MainFragment(), showHomeButton = false)
-                    }.setNegativeButton("No") {_,_ ->}.create().show()
+                    }.setNegativeButton("No") { _, _ -> }.create().show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -135,7 +137,7 @@ class EditFragment() : BaseFragment() {
                 editViewModel.cancelEditing()
                 adapter.clear()
                 popBackStack()
-            }.setNegativeButton("No") {_,_ ->}.create().show()
+            }.setNegativeButton("No") { _, _ -> }.create().show()
     }
 
     companion object {

@@ -52,10 +52,41 @@ class EditInteractorTest {
     }
 
     @Test
-    fun test_end_editing() = runBlocking {
-        interactor.endEditing("Title")
+    fun test_end_editing_success() = runBlocking {
+        var success = 0
+        var failed = ""
+        interactor.endEditing("Title", { success++ }, { message, pos -> failed = message })
         dataSource.checkEndEditing(1, "Title")
+        assertEquals(1, success)
+        assertEquals("", failed)
     }
+
+    @Test
+    fun test_end_editing_empty_name() = runBlocking {
+        var success = 0
+        var failed = ""
+        var position = -10
+        dataSource.endEditingReturnType = 1
+        interactor.endEditing("Title", { success++ }, { message, pos -> failed = message; position = pos })
+        dataSource.checkEndEditing(1, "Title")
+        assertEquals(0, success)
+        assertEquals("Item name must not be empty. Empty item name at position 4", failed)
+        assertEquals(3, position)
+    }
+
+    @Test
+    fun test_end_editing_empty_list() = runBlocking {
+        var success = 0
+        var failed = ""
+        var position = -10
+        dataSource.endEditingReturnType = 2
+        interactor.endEditing("Title", { success++ }, { message, pos -> failed = message; position = pos })
+        dataSource.checkEndEditing(1, "Title")
+        assertEquals(0, success)
+        assertEquals("Item list must not be empty", failed)
+        assertEquals(-1, position)
+    }
+
 
     @Test
     fun test_get_item_list_success() = runBlocking {
@@ -67,7 +98,7 @@ class EditInteractorTest {
 
     @Test
     fun test_get_item_list_empty_list() = runBlocking {
-        dataSource.returnType = 1
+        dataSource.listReturnType = 1
         val actual = interactor.getList()
         val expected = listOf(DomainItem.FailedDomainItem("Item list must not be empty"))
         assertEquals(expected, actual)
@@ -75,9 +106,10 @@ class EditInteractorTest {
 
     @Test
     fun test_get_item_list_empty_item_name() = runBlocking {
-        dataSource.returnType = 2
+        dataSource.listReturnType = 2
         val actual = interactor.getList()
-        val expected = listOf(DomainItem.FailedDomainItem("Item name must not be empty. Empty item name at position 3"))
+        val expected =
+            listOf(DomainItem.FailedDomainItem("Item name must not be empty. Empty item name at position 3"))
         assertEquals(expected, actual)
     }
 
@@ -94,7 +126,8 @@ class EditInteractorTest {
         private var changeItemColorSecondValue = -1
         private var endEditingCounter = 0
         private var endEditingValue = ""
-        var returnType = 0
+        var listReturnType = 0
+        var endEditingReturnType = 0
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -117,11 +150,12 @@ class EditInteractorTest {
         }
 
         override fun getList(): List<DomainItem.BaseDomainItem> {
-            return when(returnType) {
+            return when (listReturnType) {
                 0 -> listOf(
                     DomainItem.BaseDomainItem("Name", 0),
                     DomainItem.BaseDomainItem("Name 2", 1)
                 )
+
                 1 -> throw EmptyItemListException()
                 else -> throw EmptyItemNameException("2")
             }
@@ -159,6 +193,11 @@ class EditInteractorTest {
         override suspend fun endEditing(title: String) {
             endEditingCounter++
             endEditingValue = title
+
+            if (endEditingReturnType == 1)
+                throw EmptyItemNameException("3")
+            else if (endEditingReturnType == 2)
+                throw EmptyItemListException()
         }
 
         override fun cancelEditing() {

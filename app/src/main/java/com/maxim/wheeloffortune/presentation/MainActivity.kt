@@ -7,7 +7,7 @@ import com.maxim.wheeloffortune.R
 import com.maxim.wheeloffortune.presentation.main.MainFragment
 
 class MainActivity : AppCompatActivity(), FragmentManager {
-    private val backStackHomeButtonList = mutableListOf<Boolean>()
+    private var backStackHomeButtonList = mutableListOf<Boolean>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,6 +45,27 @@ class MainActivity : AppCompatActivity(), FragmentManager {
         backStackHomeButtonList.removeAt(backStackHomeButtonList.lastIndex)
         supportActionBar?.setDisplayHomeAsUpEnabled(backStackHomeButtonList[backStackHomeButtonList.lastIndex])
         supportActionBar?.setHomeButtonEnabled(backStackHomeButtonList[backStackHomeButtonList.lastIndex])
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(
+            LIST,
+            ArrayList(backStackHomeButtonList.map { if (it) "1" else "0" })
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        backStackHomeButtonList =
+            savedInstanceState.getStringArrayList(LIST)?.map { it == "1" }!!
+                .toMutableList()
+        supportActionBar?.setDisplayHomeAsUpEnabled(backStackHomeButtonList[backStackHomeButtonList.lastIndex])
+        supportActionBar?.setHomeButtonEnabled(backStackHomeButtonList[backStackHomeButtonList.lastIndex])
+    }
+
+    companion object {
+        private const val LIST = "LIST"
     }
 }
 

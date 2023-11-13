@@ -64,8 +64,8 @@ class EditRecyclerViewAdapter(
                     val imm =
                         nameTextView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     nameTextView.requestFocus()
-                    imm.toggleSoftInput(0, 0)
-                    imm.showSoftInput(nameTextView, 0)
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+                    imm.showSoftInput(nameTextView, InputMethodManager.SHOW_IMPLICIT)
                 }
 
                 val deleteImageButton = itemView.findViewById<ImageButton>(R.id.deleteItem)

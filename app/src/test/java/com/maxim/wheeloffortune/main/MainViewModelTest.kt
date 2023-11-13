@@ -43,13 +43,7 @@ class MainViewModelTest {
         viewModel.openItem(id = 123)
         interactor.checkOpenItemWasCalled(1)
         interactor.checkOpenItemWasCalledWith(123)
-    }
-
-    @Test
-    fun test_rotate() {
-        viewModel.rotate()
-        val expected = listOf(State.Rotating, State.Done("Item"))
-        assertEquals(expected, communication.stateList)
+        assertEquals(listOf(State.Init), communication.stateList)
     }
 
     @Test

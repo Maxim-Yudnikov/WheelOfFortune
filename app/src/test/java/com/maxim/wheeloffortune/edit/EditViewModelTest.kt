@@ -7,7 +7,6 @@ import com.maxim.wheeloffortune.domain.main.DomainItem
 import com.maxim.wheeloffortune.presentation.edit.EditCommunication
 import com.maxim.wheeloffortune.presentation.edit.EditState
 import com.maxim.wheeloffortune.presentation.edit.EditViewModel
-import com.maxim.wheeloffortune.presentation.edit.EndEditResult
 import com.maxim.wheeloffortune.presentation.edit.UiValidator
 import com.maxim.wheeloffortune.presentation.main.UiItem
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +79,7 @@ class EditViewModelTest {
         }
         interactor.checkEndEditing(1, "title")
         assertEquals(0, check)
-        communication.checkState(EditState.ItemListError("Error"))
+        communication.checkState(EditState.ItemListError("message", 5))
     }
 
     @Test
@@ -223,13 +222,18 @@ class EditViewModelTest {
             assertEquals(secondArg, changeItemColorSecondValue)
         }
 
-        override suspend fun endEditing(title: String): EndEditResult {
+        override suspend fun endEditing(
+            title: String,
+            onSuccess: () -> Unit,
+            onFailed: (message: String, position: Int) -> Unit
+        ) {
             endEditingCounter++
             endEditingValue = title
-            return if(returnSuccess)
-                EndEditResult.Success
-            else
-                EndEditResult.Failed("Error")
+            if (returnSuccess) {
+                onSuccess.invoke()
+            } else {
+                onFailed.invoke("message", 5)
+            }
         }
 
         override fun cancelEditing() {

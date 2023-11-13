@@ -33,7 +33,8 @@ class MainFragment() : BaseFragment() {
             }
         })
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        val spanCount = requireActivity().resources.getInteger(R.integer.grid_column_count)
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
         viewModel.observeList(this) {
             adapter.update()
         }
