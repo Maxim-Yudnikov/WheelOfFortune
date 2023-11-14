@@ -1,7 +1,6 @@
 package com.maxim.wheeloffortune.domain.edit
 
 import com.maxim.wheeloffortune.data.WheelEditDataSource
-import com.maxim.wheeloffortune.domain.EmptyItemNameError
 import com.maxim.wheeloffortune.domain.EmptyItemNameException
 import com.maxim.wheeloffortune.domain.FailureHandler
 import com.maxim.wheeloffortune.domain.main.DomainItem
@@ -24,7 +23,7 @@ class BaseEditInteractor(
 
     override fun getList(): List<DomainItem> {
         return try {
-            dataSource.getList()
+            dataSource.getItemList()
         } catch (e: Exception) {
             return listOf(DomainItem.FailedDomainItem(failureHandler.handle(e).getMessage()))
         }

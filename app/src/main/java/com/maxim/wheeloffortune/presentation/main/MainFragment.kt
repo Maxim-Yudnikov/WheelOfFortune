@@ -41,5 +41,5 @@ class MainFragment() : BaseFragment() {
         viewModel.getItemList()
     }
 
-    override val onBackPressed = {}
+    override val onBackPressed = { requireActivity().finish() }
 }

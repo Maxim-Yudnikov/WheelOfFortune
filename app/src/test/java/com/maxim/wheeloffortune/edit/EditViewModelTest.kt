@@ -105,6 +105,18 @@ class EditViewModelTest {
         )
     }
 
+    @Test
+    fun test_update() {
+        viewModel.update()
+        communication.checkState(EditState.Success)
+    }
+
+    @Test
+    fun test_cancel_editing() {
+        viewModel.cancelEditing()
+        interactor.checkCancelEditingCalledTimes(1)
+    }
+
 
     private class FakeUiValidator() : UiValidator {
         var showMessage = ""
@@ -165,6 +177,7 @@ class EditViewModelTest {
         private var endEditingCounter = 0
         private var endEditingValue = ""
         var returnSuccess = true
+        private var cancelEditingCounter = 0
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -237,7 +250,11 @@ class EditViewModelTest {
         }
 
         override fun cancelEditing() {
-            TODO("Not yet implemented")
+            cancelEditingCounter++
+        }
+
+        fun checkCancelEditingCalledTimes(count: Int) {
+            assertEquals(count, cancelEditingCounter)
         }
 
         fun checkEndEditing(count: Int, value: String) {

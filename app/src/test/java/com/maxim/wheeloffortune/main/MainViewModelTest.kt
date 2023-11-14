@@ -52,6 +52,9 @@ class MainViewModelTest {
         interactor.checkCloseItemCheckWasCalled(1)
     }
 
+
+
+
     private class FakeCommunication : Communication {
         var itemList: List<UiItem> = emptyList()
         var stateList = mutableListOf<State>()
@@ -89,10 +92,6 @@ class MainViewModelTest {
         override suspend fun openItem(id: Int) {
             openItemCounter++
             openItemValue = id
-        }
-
-        override suspend fun rotate(): String {
-            return "Item"
         }
 
         override fun closeItem() {

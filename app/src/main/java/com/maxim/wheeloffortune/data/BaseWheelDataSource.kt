@@ -27,7 +27,7 @@ class BaseWheelDataSource(
         wheelItemsCache.deleteItem(id)
     }
 
-    override fun getList(): List<DomainItem.BaseDomainItem> {
+    override fun getItemList(): List<DomainItem.BaseDomainItem> {
         val list = wheelItemsCache.getItemList()
         if (list.isEmpty())
             throw EmptyItemListException()
@@ -88,10 +88,6 @@ class BaseWheelDataSource(
             wheelCache.cacheId(id)
             wheelItemsCache.cache(dao.getAllItemsWithId(id).map { it.mapToData() }.reversed())
         }
-    }
-
-    override suspend fun getRandomItemName(): String {
-        return dao.getAllItemsWithId(wheelCache.getCachedId()).random().name
     }
 
     override fun closeWheel() {

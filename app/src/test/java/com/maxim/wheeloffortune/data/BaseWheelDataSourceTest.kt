@@ -3,6 +3,8 @@ package com.maxim.wheeloffortune.data
 import com.maxim.wheeloffortune.data.room.ItemRoomModel
 import com.maxim.wheeloffortune.data.room.RoomDao
 import com.maxim.wheeloffortune.data.room.WheelRoomModel
+import com.maxim.wheeloffortune.domain.EmptyItemListException
+import com.maxim.wheeloffortune.domain.EmptyItemNameException
 import com.maxim.wheeloffortune.domain.main.DomainItem
 import kotlinx.coroutines.runBlocking
 import org.junit.*
@@ -83,6 +85,61 @@ class BaseWheelDataSourceTest {
         assertEquals(expected, actual)
     }
 
+    @Test(expected = EmptyItemListException::class)
+    fun test_end_editing_empty_list() = runBlocking {
+        dataSource.endEditing("Title")
+    }
+
+    @Test
+    fun test_end_editing_empty_item_name() = runBlocking {
+        dataSource.createNewItem()
+        try {
+            dataSource.endEditing("Title")
+        } catch (e: Exception) {
+            assertEquals(EmptyItemNameException("0"), e)
+        }
+    }
+
+    @Test
+    fun test_delete_wheel() = runBlocking {
+        dataSource.createNewItem()
+        dataSource.changeItemName(0, "name")
+        dataSource.endEditing("Title")
+
+        dataSource.cache(0)
+        dataSource.deleteWheel()
+        assertEquals(emptyList<WheelRoomModel>(), dao.wheelList)
+    }
+
+    @Test
+    fun test_cancel_editing() = runBlocking {
+        dataSource.createNewItem()
+        dataSource.changeItemName(0, "name")
+        dataSource.endEditing("Title")
+
+        dataSource.cache(0)
+        dataSource.createNewItem()
+        dataSource.changeItemName(1, "new name")
+        dataSource.cancelEditing()
+
+        assertEquals(listOf(WheelRoomModel(0, "Title")), dao.wheelList)
+        assertEquals(listOf(ItemRoomModel(0, 0, "name", 0)), dao.itemList)
+    }
+
+    @Test(expected = EmptyItemListException::class)
+    fun test_get_item_list_empty() = runBlocking {
+        val list = dataSource.getItemList()
+    }
+
+    @Test
+    fun test_get_item_list_success() = runBlocking {
+        dataSource.createNewItem()
+        dataSource.changeItemName(0, "name")
+        dataSource.changeItemColor(0, 2)
+        val actual = dataSource.getItemList()
+        val expected = listOf(DomainItem.BaseDomainItem("name", 2))
+    }
+
 
     private class FakeDao : RoomDao {
         var wheelList = mutableListOf<WheelRoomModel>()
@@ -108,11 +165,13 @@ class BaseWheelDataSourceTest {
         }
 
         override suspend fun deleteWheel(id: Int) {
-            wheelList.forEachIndexed { index, _ ->
-                if (wheelList[index].id == id) {
-                    wheelList.removeAt(index)
+            var idToDelete = -1
+            wheelList.forEachIndexed { index, item ->
+                if (item.id == id) {
+                    idToDelete = item.id!!
                 }
             }
+            wheelList.removeAt(idToDelete)
         }
 
         override suspend fun insertItem(item: ItemRoomModel) {

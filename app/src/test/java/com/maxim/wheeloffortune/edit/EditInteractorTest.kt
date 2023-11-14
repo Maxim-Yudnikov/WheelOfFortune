@@ -113,6 +113,12 @@ class EditInteractorTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun test_cancel_editing() {
+        interactor.cancelEditing()
+        dataSource.checkCancelEditingCalledTimes(1)
+    }
+
     private class FakeDataSource : WheelEditDataSource {
         private var deleteWheelCounter = 0
         private var createNewItemCounter = 0
@@ -128,6 +134,7 @@ class EditInteractorTest {
         private var endEditingValue = ""
         var listReturnType = 0
         var endEditingReturnType = 0
+        private var cancelEditingCounter = 0
         override suspend fun deleteWheel() {
             deleteWheelCounter++
         }
@@ -149,7 +156,7 @@ class EditInteractorTest {
             deleteItemValue = id
         }
 
-        override fun getList(): List<DomainItem.BaseDomainItem> {
+        override fun getItemList(): List<DomainItem.BaseDomainItem> {
             return when (listReturnType) {
                 0 -> listOf(
                     DomainItem.BaseDomainItem("Name", 0),
@@ -200,13 +207,17 @@ class EditInteractorTest {
                 throw EmptyItemListException()
         }
 
-        override fun cancelEditing() {
-            TODO("Not yet implemented")
-        }
-
         fun checkEndEditing(count: Int, value: String) {
             assertEquals(count, endEditingCounter)
             assertEquals(value, endEditingValue)
+        }
+
+        override fun cancelEditing() {
+            cancelEditingCounter++
+        }
+
+        fun checkCancelEditingCalledTimes(count: Int) {
+            assertEquals(count, cancelEditingCounter)
         }
     }
 }

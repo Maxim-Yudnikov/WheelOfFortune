@@ -34,12 +34,6 @@ class BaseInteractorTest {
     }
 
     @Test
-    fun test_rotate() = runBlocking {
-        val actual = interactor.rotate()
-        assertEquals("Random Name", actual)
-    }
-
-    @Test
     fun test_close_wheel() {
         interactor.closeItem()
         dataSource.checkCloseWheelWasCalled(1)
@@ -57,10 +51,6 @@ class BaseInteractorTest {
         override suspend fun cache(id: Int) {
             cacheCounter++
             cacheValue = id
-        }
-
-        override suspend fun getRandomItemName(): String {
-            return "Random Name"
         }
 
         override fun closeWheel() {
