@@ -6,7 +6,7 @@
     android:layout_margin="14dp"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="@color/white">
+    style="@style/WheelItem">
 
     <TextView
         android:id="@+id/titleTextView"
@@ -15,6 +15,7 @@
         android:textSize="30sp"
         tools:text="MMMMMMMMMMMMMMMMMM"
         android:gravity="center"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        style="@style/TextColor"/>
 
 </LinearLayout>

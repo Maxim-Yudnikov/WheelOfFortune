@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/LightBackground">
 
     <com.bluehomestudio.luckywheel.LuckyWheel
         android:id="@+id/wheel"
@@ -23,11 +24,11 @@
         android:gravity="center"
         android:padding="5dp"
         android:textSize="30sp"
-        tools:text="RESULT" />
+        tools:text="RESULT"
+        style="@style/TextColor"/>
 
     <Button
         android:id="@+id/actionButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/rotate_button" />

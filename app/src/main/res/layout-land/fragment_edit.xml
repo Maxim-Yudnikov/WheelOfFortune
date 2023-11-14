@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/LightBackground">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/titleEditText"
@@ -26,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:text="@string/items"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        style="@style/TextColor"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemsRecyclerView"
@@ -57,7 +59,6 @@
 
         <Button
             android:id="@+id/newItemButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -66,7 +67,6 @@
 
         <Button
             android:id="@+id/saveButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
